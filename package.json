@@ -1,0 +1,28 @@
+{
+  "name": "outages",
+  "version": "1.0.0",
+  "description": "npm packages needed for the Outages application.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "griddle-react": "^0.3.1",
+    "react": "^0.14.7",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lcreid/outages.git"
+  },
+  "author": "Larry Reid",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lcreid/outages/issues"
+  },
+  "homepage": "https://github.com/lcreid/outages#readme"
+}
