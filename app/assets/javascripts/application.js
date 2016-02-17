@@ -20,4 +20,7 @@
 //= require components
 // End for React
 
+//= require detect_timezone
+//= require jquery.detect_timezone
+
 //= require_tree .
