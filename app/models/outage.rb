@@ -1,0 +1,2 @@
+class Outage < ApplicationRecord
+end
