@@ -28,7 +28,8 @@
 
 <p>
   <%= f.label :time_zone %><br>
-  <%= f.text_field :time_zone %>
+  <!-- <%= f.text_field :time_zone, id: "time_zone" %> -->
+  <%= f.select :time_zone, ActiveSupport::TimeZone::MAPPING.values.uniq %> <!--, selected: @user.time_zone -->
 </p>
 
 <p>
@@ -41,7 +42,13 @@
 </p>
 <% end %>
 
-<script>
-  var tz = jstz.determine();
-  ("#time_zone").text = tz.name();
+<script type="text/javascript">
+  $(document).ready(function(){
+    var tz = $().get_timezone();
+    console.log(tz);
+    var option = $("#outage_time_zone option[value='" + tz +"']");
+    console.log(option);
+    $("#outage_time_zone option[value='" + tz +"']")[0].selected = true
+    //$("#time_zone")[0].selected = tz;
+  });
 </script>
