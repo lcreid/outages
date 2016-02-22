@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(version: 20160218015841) do
 
   create_table "outages", force: :cascade do |t|
     t.string   "title"
-    t.datetime "start_time"
-    t.datetime "end_time"
+    t.string   "start_time"
+    t.string   "end_time"
     t.string   "time_zone"
     t.text     "description"
     t.datetime "created_at",  null: false
