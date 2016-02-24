@@ -1,5 +1,6 @@
 class OutagesController < ApplicationController
   def index
+    @outages = Outage.all
   end
 
   def show
@@ -7,9 +8,11 @@ class OutagesController < ApplicationController
   end
 
   def new
+    @outage = Outage.new
   end
 
   def edit
+    @outage = Outage.find(params[:id])
   end
 
   def create
@@ -19,14 +22,29 @@ class OutagesController < ApplicationController
     params[:outage][:end_time] = combine(params[:outage][:end_date], params[:outage][:end_time])
     @outage = Outage.new(outage_params)
 
-    @outage.save
-    redirect_to @outage
+    if @outage.save
+      redirect_to @outage
+    else
+      render 'new'
+    end
   end
 
   def update
+    @outage = Outage.find(params[:id])
+
+    params[:outage][:start_time] = combine(params[:outage][:start_date], params[:outage][:start_time])
+    params[:outage][:end_time] = combine(params[:outage][:end_date], params[:outage][:end_time])
+    if @outage.update(outage_params)
+      redirect_to @outage
+    else
+      render 'edit'
+    end
   end
 
   def destroy
+    outage = Outage.find(params[:id])
+    outage.destroy
+    redirect_to outages_path
   end
 
   private
@@ -35,6 +53,7 @@ class OutagesController < ApplicationController
   end
 
   def combine(date, time)
+    # TODO: Validate that date and time aren't nil.
     date.strip + "T" + time.strip
   end
 end

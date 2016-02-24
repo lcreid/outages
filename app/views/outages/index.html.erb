@@ -1,0 +1,29 @@
+<h1>Outages</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Time Zone</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @outages.each do |outage| %>
+      <tr>
+        <td><%= outage.title %></td>
+        <td><%= outage.start_time %></td>
+        <td><%= outage.end_time %></td>
+        <td><%= outage.time_zone %></td>
+        <td><%= outage.description %></td>
+        <td><%= link_to 'Edit', edit_outage_path(outage) %></td>
+        <td><%= link_to 'Delete',
+          outage_path(outage),
+          method: :delete,
+          data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

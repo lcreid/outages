@@ -1,0 +1,51 @@
+<%= form_for :outage, url: outages_path do |f| %>
+<p>
+  <%= f.label :title %><br>
+  <%= f.text_field :title %>
+</p>
+
+<p>
+  <%= f.label :start_date %><br>
+  <%= f.date_field :start_date %>
+</p>
+
+<p>
+  <%= f.label :start_time %><br>
+  <%= f.time_field :start_time %>
+</p>
+
+<p>
+  <%= f.label :end_date %><br>
+  <%= f.date_field :end_date %>
+</p>
+
+<p>
+  <%= f.label :end_time %><br>
+  <%= f.time_field :end_time %>
+</p>
+
+<p>
+  <%= f.label :time_zone %><br>
+  <!-- <%= f.text_field :time_zone, id: "time_zone" %> -->
+  <%= f.select :time_zone, ActiveSupport::TimeZone::MAPPING.values.uniq %> <!--, selected: @user.time_zone -->
+</p>
+
+<p>
+  <%= f.label :description %><br>
+  <%= f.text_area :description %>
+</p>
+
+<p>
+  <%= f.submit %>
+</p>
+<% end %>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var tz = $().get_timezone();
+    // console.log(tz);
+    // var option = $("#outage_time_zone option[value='" + tz +"']");
+    // console.log(option);
+    $("#outage_time_zone option[value='" + tz +"']")[0].selected = true
+  });
+</script>
