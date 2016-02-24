@@ -18,8 +18,6 @@ class OutagesController < ApplicationController
   def create
     # render plain: params[:outage].inspect
     # Combine dates and times.
-    params[:outage][:start_time] = combine(params[:outage][:start_date], params[:outage][:start_time])
-    params[:outage][:end_time] = combine(params[:outage][:end_date], params[:outage][:end_time])
     @outage = Outage.new(outage_params)
 
     if @outage.save
@@ -32,8 +30,6 @@ class OutagesController < ApplicationController
   def update
     @outage = Outage.find(params[:id])
 
-    params[:outage][:start_time] = combine(params[:outage][:start_date], params[:outage][:start_time])
-    params[:outage][:end_time] = combine(params[:outage][:end_date], params[:outage][:end_time])
     if @outage.update(outage_params)
       redirect_to @outage
     else

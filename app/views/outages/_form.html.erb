@@ -5,23 +5,23 @@
 </p>
 
 <p>
-  <%= f.label :start_date %><br>
-  <%= f.date_field :start_date %>
+  <%= f.label :start_time %><br>
+  <%= f.date_select :start_time %>
 </p>
 
 <p>
   <%= f.label :start_time %><br>
-  <%= f.time_field :start_time %>
+  <%= f.time_select :start_time, ignore_date: true %>
 </p>
 
 <p>
   <%= f.label :end_date %><br>
-  <%= f.date_field :end_date %>
+  <%= f.date_select :end_date %>
 </p>
 
 <p>
   <%= f.label :end_time %><br>
-  <%= f.time_field :end_time %>
+  <%= f.time_select :end_time, ignore_date: true %>
 </p>
 
 <p>

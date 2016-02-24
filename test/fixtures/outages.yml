@@ -2,14 +2,18 @@
 
 happy_new_year_samoa:
   title: Happy New Year Samoa
-  start_time: 2016-01-01T00:00:00
-  end_time: 2016-01-01T00:00:01
+  start_date: 2016-01-01
+  start_time: 00:00:00
+  end_date: 2016-01-01
+  end_time: "00:00:01"
   time_zone: Samoa
   description:
 
 happy_new_year_london:
   title: MyString
-  start_time: 2016-01-01T00:00:00
-  end_time: 2016-01-01T00:00:01
+  start_date: 2016-01-01
+  start_time: 00:00:00
+  end_date: 2016-01-01
+  end_time: "00:00:01"
   time_zone: UTC
   description:
