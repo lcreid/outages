@@ -4,7 +4,9 @@
   <thead>
     <tr>
       <th>Title</th>
+      <th>Start Date</th>
       <th>Start Time</th>
+      <th>End Date</th>
       <th>End Time</th>
       <th>Time Zone</th>
       <th>Description</th>
@@ -14,7 +16,9 @@
     <% @outages.each do |outage| %>
       <tr>
         <td><%= outage.title %></td>
+        <td><%= outage.start_date %></td>
         <td><%= outage.start_time %></td>
+        <td><%= outage.end_date %></td>
         <td><%= outage.end_time %></td>
         <td><%= outage.time_zone %></td>
         <td><%= outage.description %></td>

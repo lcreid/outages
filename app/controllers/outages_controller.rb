@@ -45,7 +45,7 @@ class OutagesController < ApplicationController
 
   private
   def outage_params
-    params[:outage].permit(:title, :start_time, :end_time, :time_zone, :description)
+    params[:outage].permit(:title, :start_date, :start_time, :end_date, :end_time, :time_zone, :description)
   end
 
   def combine(date, time)
