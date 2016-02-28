@@ -8,17 +8,11 @@ class Outage < ApplicationRecord
   end
 
   def start_datetime_tz(tz)
-    # puts "UTC: " + start_datetime_utc.to_s
-    # puts tz.name
-
-    to_tz(tz).utc_to_local(start_datetime_utc)
+    datetime_tz(tz, start_datetime_utc)
   end
 
   def end_datetime_tz(tz)
-    # puts "UTC: " + end_datetime_utc.to_s
-    # puts tz.name
-
-    to_tz(tz).utc_to_local(end_datetime_utc)
+    datetime_tz(tz, end_datetime_utc)
   end
 
   private
@@ -27,11 +21,15 @@ class Outage < ApplicationRecord
   end
 
   def start_datetime_s
-    start_date + "T" + start_time
+    datetime_s(start_date, start_time)
   end
 
   def end_datetime_s
-    end_date + "T" + end_time
+    datetime_s(end_date, end_time)
+  end
+
+  def datetime_s(date, time)
+    date + "T" + time
   end
 
   def to_tz(tz)
@@ -39,6 +37,7 @@ class Outage < ApplicationRecord
     tz
   end
 
-  def datetime_tz(tz)
+  def datetime_tz(tz, datetime)
+    to_tz(tz).utc_to_local(datetime)
   end
 end
