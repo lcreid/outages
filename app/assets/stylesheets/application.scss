@@ -10,6 +10,21 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
- *= require_self
  */
+// https://github.com/twbs/bootstrap-rubygem
+// Custom bootstrap variables must be set or import before bootstrap itself.
+@import "bootstrap";
+// Not importing anything else now by design, which is unlike the standard
+// Rails behaviour. Add Sass files explicitly. There's gems to import trees
+// of Sass, but there's also debate about whether this is the right thing
+// to do.
+
+body {
+  padding-top: 70px;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    padding-top: 0;
+  }
+}

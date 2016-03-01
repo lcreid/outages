@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require bootstrap-sprockets
 
 // For React https://github.com/reactjs/react-rails
 //= require react
