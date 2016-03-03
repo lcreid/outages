@@ -35,6 +35,8 @@ gem 'redis', '~> 3.0'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+  gem 'rails-controller-testing'
+  gem 'timecop'
 end
 
 group :development do
@@ -44,8 +46,6 @@ group :development do
   gem 'spring'
   # Beautify Ruby
   gem 'rubocop', require: false
-
-  gem 'timecop'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

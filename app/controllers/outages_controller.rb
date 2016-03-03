@@ -16,8 +16,6 @@ class OutagesController < ApplicationController
   end
 
   def create
-    # render plain: params[:outage].inspect
-    # Combine dates and times.
     @outage = Outage.new(outage_params)
 
     if @outage.save

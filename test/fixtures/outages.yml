@@ -1,6 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 happy_new_year_samoa:
+  id: 1
   title: Happy New Year Samoa
   start_date: 2016-01-01
   start_time: 00:00:00
@@ -10,7 +11,18 @@ happy_new_year_samoa:
   description:
 
 happy_new_year_london:
-  title: MyString
+  id: 2
+  title: Happy New Year London
+  start_date: 2016-01-01
+  start_time: 00:00:00
+  end_date: 2016-01-01
+  end_time: "00:00:01"
+  time_zone: UTC
+  description:
+
+doomed_to_destruction:
+  id: 3
+  title: Doomed to Destruction
   start_date: 2016-01-01
   start_time: 00:00:00
   end_date: 2016-01-01
