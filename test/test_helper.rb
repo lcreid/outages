@@ -9,6 +9,7 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 end
 
+# http://stackoverflow.com/questions/35496670/rails-5-testing-nomethoderror/35763171#35763171
 class ActionDispatch::IntegrationTest
   include Rails::Controller::Testing::TestProcess
   include Rails::Controller::Testing::TemplateAssertions

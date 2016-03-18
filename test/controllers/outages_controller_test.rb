@@ -70,4 +70,12 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to outages_path
   end
+
+  test 'should get index with time_zone from cookie' do
+    cookies[:time_zone] = "Nuku'alofa"
+    get '/outages'
+    assert_response :success
+    assert_not_nil assigns(:outages)
+    assert_select '#time-zone-setter option[checked]', "Nuku'alofa"
+  end
 end
