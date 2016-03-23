@@ -10,6 +10,7 @@
 
   <!-- Latest compiled and minified CSS -->
   <!-- Bootstrap -->
+  <script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script><!-- Tether for Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -35,19 +36,32 @@
 
   <title>Outages</title>
   <%= csrf_meta_tags %>
-    <%= action_cable_meta_tag %>
+  <%= action_cable_meta_tag %>
 
-      <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-        <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 </head>
 
 <body>
   <%= render 'shared/navbar' %>
-  <div class="container">
-    <div class="starter-template">
-      <%= yield %>
+    <div class="container">
+      <div class="starter-template">
+        <%= yield %>
+      </div>
     </div>
-  </div>
+
+  <script type="text/javascript">
+    var ready = function() {
+      console.log("well, looky here!");
+      var tz;
+      tz = "<%=cookies[:time_zone]%>";
+      if (tz === "") tz = $().get_timezone();
+      // console.log(tz); var option = $("#outage_time_zone option[value='" + tz +"']"); console.log(option);
+      $("#user_time_zone option[value='" + tz + "']")[0].selected = true
+    };
+    $(document).on('page:load', ready);
+    $(document).on('ready', ready);
+  </script>
 </body>
 
 </html>

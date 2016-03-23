@@ -24,7 +24,7 @@
   <%= f.time_field :end_time, value: @outage.end_time, ignore_date: true %>
 </p>
 
-<%= f.hidden_field :time_zone, value: @user.time_zone %>
+<%= f.hidden_field :time_zone, value: (cookies[:time_zone]) %>
 
 <p>
   <%= f.label :description %><br>
@@ -36,11 +36,3 @@
   <%= link_to 'Cancel', outages_path, class: "btn btn-default", role: "button" %>
 </p>
 <% end %>
-
-<script type="text/javascript">
-  $(document).ready(function () {
-    var tz = $().get_timezone();
-    // console.log(tz); var option = $("#outage_time_zone option[value='" + tz +"']"); console.log(option);
-    $("#user_time_zone option[value='" + tz + "']")[0].selected = true
-  });
-</script>

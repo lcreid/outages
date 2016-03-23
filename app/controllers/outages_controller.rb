@@ -12,7 +12,6 @@ class OutagesController < ApplicationController
   # Or, JavaScript can set cookie values (document.cookie = ),
   # so we just adjust the cookie when the user makes a selection.
   # I hope the action gets the modified cookie.
-  include OutagesHelper
 
   def index
     @outages = Outage.all
@@ -24,12 +23,10 @@ class OutagesController < ApplicationController
 
   def new
     @outage = Outage.new
-    user_time_zone
   end
 
   def edit
     @outage = Outage.find(params[:id])
-    user_time_zone
   end
 
   def create
@@ -67,12 +64,5 @@ class OutagesController < ApplicationController
   def combine(date, time)
     # TODO: Validate that date and time aren't nil.
     date.strip + 'T' + time.strip
-  end
-
-  def user_time_zone
-    puts 'In user_time_zone'
-    @user = User.new
-    puts "Time Zone: #{params[:user][:time_zone]}"
-    @user.time_zone = params[:user][:time_zone]
   end
 end

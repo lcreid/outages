@@ -16,9 +16,12 @@
         <li><a href="#contact">Contact</a></li> %>
       </ul> -->
       <div id="time-zone-setter" class="navbar-right">
-        <%= select "user", "time_zone", ActiveSupport::TimeZone::MAPPING.values.uniq %>
+        <%= select "user", "time_zone", ActiveSupport::TimeZone::MAPPING.values.uniq, selected: cookies[:time_zone] %>
       </div>
     </div>
     <!--/.nav-collapse -->
   </div>
 </nav>
+<div id="debug">
+  <%= cookies[:time_zone] %>
+</div>
