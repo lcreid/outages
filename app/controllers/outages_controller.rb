@@ -31,6 +31,8 @@ class OutagesController < ApplicationController
 
   def create
     @outage = Outage.new(outage_params)
+    # puts "Outage: #{outage_params.inspect} @outage.time_zone #{@outage.time_zone}"
+    cookies[:time_zone] = outage_params[:time_zone]
 
     if @outage.save
       redirect_to @outage
@@ -41,6 +43,7 @@ class OutagesController < ApplicationController
 
   def update
     @outage = Outage.find(params[:id])
+    cookies[:time_zone] = outage_params[:time_zone]
 
     if @outage.update(outage_params)
       redirect_to @outage

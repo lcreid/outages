@@ -78,4 +78,36 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil assigns(:outages)
     assert_select '#time-zone-setter option[selected]', tz
   end
+
+  test 'post/create should set cookie from time zone setter' do
+    post '/outages', params: {
+      outage: {
+        title: "set time zone",
+        start_date: "2016-01-01",
+        start_time: "00:00:00",
+        end_date: "2016-01-01",
+        end_time: "00:00:01",
+        time_zone: tz = "Pacific/Pago_Pago"
+      }
+    }
+    assert_redirected_to outage_path(assigns(:outage))
+    # OMG: The cookies key has to be a string in the test case.
+    assert_equal tz, cookies['time_zone']
+  end
+
+  test 'put/update should set cookie from time zone setter' do
+    put '/outages/1', params: {
+      outage: {
+        title: "set time zone",
+        start_date: "2016-01-01",
+        start_time: "00:00:00",
+        end_date: "2016-01-01",
+        end_time: "00:00:01",
+        time_zone: tz = "Pacific/Pago_Pago"
+      }
+    }
+    assert_redirected_to outage_path(assigns(:outage))
+    # OMG: The cookies key has to be a string in the test case.
+    assert_equal tz, cookies['time_zone']
+  end
 end
