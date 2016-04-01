@@ -13,6 +13,8 @@ class OutagesController < ApplicationController
   # so we just adjust the cookie when the user makes a selection.
   # I hope the action gets the modified cookie.
 
+  helper_method :cookies
+
   def index
     @outages = Outage.all
   end

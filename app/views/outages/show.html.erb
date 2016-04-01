@@ -1,21 +1,21 @@
 <h1>Outage <%= @outage.id %></h1>
 
-<p>
+<p id="title">
   <strong>Title:</strong> <%= @outage.title %>
 </p>
 
-<p>
-  <strong>Start Time:</strong> <%= @outage.start_time %>
+<p id="start-time">
+  <strong>Start Time:</strong> <%= @outage.start_datetime_in_time_zone_s(cookies['time_zone']) %>
 </p>
 
-<p>
-  <strong>End Time:</strong> <%= @outage.end_time %>
+<p id="end-time">
+  <strong>End Time:</strong> <%= @outage.end_datetime_in_time_zone_s(cookies['time_zone']) %>
 </p>
 
-<p>
+<p id="time-zone">
   <strong>Time Zone:</strong> <%= @outage.time_zone %>
 </p>
 
-<p>
+<p id="description">
   <strong>Description:</strong> <%= @outage.description %>
 </p>

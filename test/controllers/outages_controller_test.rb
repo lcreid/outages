@@ -77,6 +77,14 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_not_nil assigns(:outages)
     assert_select '#time-zone-setter option[selected]', tz
+    assert_select 'tbody' do | table |
+      assert_select table, 'tr' do | rows |
+        rows.each do | row |
+          assert_select row, 'td'
+        end
+      end
+    end
+    flunk "Need to actually test what's in the rendered view."
   end
 
   test 'post/create should set cookie from time zone setter' do
@@ -109,5 +117,17 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to outage_path(assigns(:outage))
     # OMG: The cookies key has to be a string in the test case.
     assert_equal tz, cookies['time_zone']
+  end
+
+  test 'get one outage with a different cookie' do
+    cookies['time_zone'] = tz = "Pacific/Pago_Pago"
+    get '/outages/1'
+    assert_response :success
+    assert_not_nil(o = assigns(:outage))
+    zone = ActiveSupport::TimeZone[tz]
+    assert_equal zone.local(2015, 12, 30, 23, 0, 0), o.start_datetime_in_time_zone(tz)
+    puts "Doing the broken case. #{o.start_datetime_utc}"
+    assert_select 'p#start-time', "Start Time: 2015-12-30 23:00:00"
+    assert_select 'p#end-time', "End Time: 2015-12-30 23:00:01"
   end
 end

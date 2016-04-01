@@ -14,10 +14,12 @@ class OutageTest < ActiveSupport::TestCase
     o = outages(:happy_new_year_samoa)
     tz_name = "Pacific Time (US & Canada)"
     tz = ActiveSupport::TimeZone.new(tz_name)
-    assert_equal Time.utc(2015, 12, 31, 2, 0, 0), o.start_datetime_tz(tz)
-    assert_equal Time.utc(2015, 12, 31, 2, 0, 1), o.end_datetime_tz(tz)
-    assert_equal Time.utc(2015, 12, 31, 2, 0, 0), o.start_datetime_tz(tz_name)
-    assert_equal Time.utc(2015, 12, 31, 2, 0, 1), o.end_datetime_tz(tz_name)
+    assert_equal Time.utc(2015, 12, 31, 10, 0, 0), o.start_datetime_in_time_zone(tz)
+    assert_equal Time.utc(2015, 12, 31, 10, 0, 1), o.end_datetime_in_time_zone(tz)
+    assert_equal Time.utc(2015, 12, 31, 10, 0, 0), o.start_datetime_in_time_zone(tz_name)
+    assert_equal Time.utc(2015, 12, 31, 10, 0, 1), o.end_datetime_in_time_zone(tz_name)
+    assert_equal "2015-12-31 02:00:00", o.start_datetime_in_time_zone_s(tz_name)
+    assert_equal "2015-12-31 02:00:01", o.end_datetime_in_time_zone_s(tz_name)
   end
 
   test "happy new year london" do

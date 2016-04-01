@@ -1,4 +1,6 @@
 class Outage < ApplicationRecord
+  DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
   def start_datetime_utc
     parse(start_datetime_s).utc
   end
@@ -7,12 +9,24 @@ class Outage < ApplicationRecord
     parse(end_datetime_s).utc
   end
 
-  def start_datetime_tz(tz)
-    datetime_tz(tz, start_datetime_utc)
+  def start_datetime_in_time_zone(tz)
+    datetime_in_time_zone(tz, start_datetime_utc)
   end
 
-  def end_datetime_tz(tz)
-    datetime_tz(tz, end_datetime_utc)
+  def end_datetime_in_time_zone(tz)
+    datetime_in_time_zone(tz, end_datetime_utc)
+  end
+
+  def start_datetime_in_time_zone_s(tz = self.time_zone)
+    # puts "Start time zone: #{tz}"
+    # puts datetime_in_time_zone(tz, start_datetime_utc)
+    datetime_in_time_zone(tz, start_datetime_utc).strftime(DATETIME_FORMAT)
+  end
+
+  def end_datetime_in_time_zone_s(tz = self.time_zone)
+    # puts "End time zone: #{tz}"
+    # puts datetime_in_time_zone(tz, end_datetime_utc)
+    datetime_in_time_zone(tz, end_datetime_utc).strftime(DATETIME_FORMAT)
   end
 
   private
@@ -32,12 +46,12 @@ class Outage < ApplicationRecord
     date + "T" + time
   end
 
-  def to_tz(tz)
-    return ActiveSupport::TimeZone[tz] if tz.class == String
-    tz
-  end
+  # def to_tz(tz)
+  #   return ActiveSupport::TimeZone[tz] if tz.class == String
+  #   tz
+  # end
 
-  def datetime_tz(tz, datetime)
-    to_tz(tz).utc_to_local(datetime)
+  def datetime_in_time_zone(tz, datetime)
+    datetime.in_time_zone(tz)
   end
 end
