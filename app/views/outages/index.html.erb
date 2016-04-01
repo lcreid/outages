@@ -6,11 +6,8 @@
   <thead>
     <tr>
       <th>Title</th>
-      <th>Start Date</th>
-      <th>Start Time</th>
-      <th>End Date</th>
-      <th>End Time</th>
-      <th>Time Zone</th>
+      <th>Start</th>
+      <th>End</th>
       <th>Description</th>
     </tr>
   </thead>
@@ -18,11 +15,8 @@
     <% @outages.each do |outage| %>
       <tr>
         <td><%= outage.title %></td>
-        <td><%= outage.start_date %></td>
-        <td><%= outage.start_time %></td>
-        <td><%= outage.end_date %></td>
-        <td><%= outage.end_time %></td>
-        <td><%= outage.time_zone %></td>
+        <td><%= outage.start_datetime_in_time_zone_s(cookies['time_zone']) %></td>
+        <td><%= outage.end_datetime_in_time_zone_s(cookies['time_zone']) %></td>
         <td><%= outage.description %></td>
         <td><%= link_to 'Edit', edit_outage_path(outage) %></td>
         <td><%= link_to 'Delete',

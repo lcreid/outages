@@ -11,7 +11,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show ID 1' do
-    get('/outages/1')
+    get '/outages/1'
     assert_response :success
     assert_not_nil assigns(:outage)
   end
@@ -72,7 +72,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get index with time_zone from cookie' do
-    cookies[:time_zone] = tz = 'Pacific/Pago_Pago'
+    cookies['time_zone'] = tz = 'Pacific/Pago_Pago'
     get '/outages'
     assert_response :success
     assert_not_nil assigns(:outages)
@@ -80,20 +80,19 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'tbody' do |table|
       assert_select table, 'tr', 3 do |rows|
         assert_select rows[0], 'td' do |elements|
-          assert_equal '2016-12-30 23:00:00', elements[1].text
-          assert_equal '2016-12-30 23:00:01', elements[2].text
+          assert_equal '2015-12-30 23:00:00', elements[1].text
+          assert_equal '2015-12-30 23:00:01', elements[2].text
         end
         assert_select rows[1], 'td' do |elements|
-          assert_equal '2016-12-31 10:00:00', elements[1].text
-          assert_equal '2016-12-31 10:00:01', elements[2].text
+          assert_equal '2015-12-31 13:00:00', elements[1].text
+          assert_equal '2015-12-31 13:00:01', elements[2].text
         end
         assert_select rows[2], 'td' do |elements|
-          assert_equal '2016-12-31 10:00:00', elements[1].text
-          assert_equal '2016-12-31 10:00:01', elements[2].text
+          assert_equal '2015-12-31 13:00:00', elements[1].text
+          assert_equal '2015-12-31 13:00:01', elements[2].text
         end
       end
     end
-    flunk "Need to actually test what's in the rendered view."
   end
 
   test 'post/create should set cookie from time zone setter' do
