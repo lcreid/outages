@@ -78,7 +78,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil assigns(:outages)
     assert_select '#time-zone-setter option[selected]', tz
     assert_select 'tbody' do |table|
-      assert_select table, 'tr', 3 do |rows|
+      assert_select table, 'tr', 5 do |rows|
         assert_select rows[0], 'td' do |elements|
           assert_equal '2015-12-30 23:00:00', elements[1].text
           assert_equal '2015-12-30 23:00:01', elements[2].text

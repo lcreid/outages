@@ -1,5 +1,7 @@
 class Outage < ApplicationRecord
   DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+  MISSING_DATE = "0000-01-01"
+  MISSING_TIME = "00:00:00"
 
   def start_datetime_utc
     parse(start_datetime_s).utc
@@ -43,7 +45,7 @@ class Outage < ApplicationRecord
   end
 
   def datetime_s(date, time)
-    date + "T" + time
+    (date || MISSING_DATE) + "T" + (time || MISSING_TIME)
   end
 
   # def to_tz(tz)

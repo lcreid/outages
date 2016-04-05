@@ -29,3 +29,21 @@ doomed_to_destruction:
   end_time: "00:00:01"
   time_zone: UTC
   description:
+
+error_no_start_date:
+  id: 4
+  title: No start date
+  start_time: 00:00:00
+  end_date: 2016-01-01
+  end_time: "00:00:01"
+  time_zone: UTC
+  description:
+
+error_no_end_time:
+  id: 5
+  title: No end time
+  start_date: 2016-01-01
+  start_time: 00:00:00
+  end_date: 2016-01-01
+  time_zone: UTC
+  description:
