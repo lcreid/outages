@@ -1,9 +1,8 @@
 require 'test_helper'
 
 class OutagesControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+  NUMBER_OF_OUTAGE_FIXTURES = 6
+
   test 'should get index' do
     get '/outages'
     assert_response :success
@@ -78,7 +77,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil assigns(:outages)
     assert_select '#time-zone-setter option[selected]', tz
     assert_select 'tbody' do |table|
-      assert_select table, 'tr', 5 do |rows|
+      assert_select table, 'tr', NUMBER_OF_OUTAGE_FIXTURES do |rows|
         assert_select rows[0], 'td' do |elements|
           assert_equal '2015-12-30 23:00:00', elements[1].text
           assert_equal '2015-12-30 23:00:01', elements[2].text

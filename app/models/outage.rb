@@ -3,6 +3,8 @@ class Outage < ApplicationRecord
   MISSING_DATE = "0000-01-01"
   MISSING_TIME = "00:00:00"
 
+  validates :start_date, :start_time, :end_date, :end_time, presence: true
+
   def start_datetime_utc
     parse(start_datetime_s).utc
   end

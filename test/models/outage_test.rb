@@ -1,9 +1,8 @@
 require 'test_helper'
 
 class OutageTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  MISSING_MESSAGE = "can't be blank"
+
   test "happy new year samoa" do
     o = outages(:happy_new_year_samoa)
     assert_equal Time.utc(2015, 12, 31, 10, 0, 0), o.start_datetime_utc
@@ -36,5 +35,69 @@ class OutageTest < ActiveSupport::TestCase
   test "No end date" do
     o = outages(:error_no_end_time)
     assert_equal "2016-01-01 00:00:00", o.end_datetime_in_time_zone_s
+  end
+
+  test "Start date before end date" do
+    skip
+    o = Outage.new(title: "end date before start date",
+      start_date: "2016-04-04",
+      start_time: "00:00:01",
+      end_date: "2016-04-04",
+      end_time: "00:00:00",
+      time_zone: "Samoa")
+    assert o.invalid?, "#{o.title} shouldn't be valid."
+    assert_equal ["Start date must be before end date"], o.errors.messages
+  end
+
+  test "Start date and time exist" do
+    o = outages(:date_time_exists_tests)
+    empty_string = ""
+    save = nil
+
+    save, o.start_date = o.start_date, save
+    assert o.invalid?, "#{o.title} shouldn't be valid with nil start date"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:start_date]
+    save, o.start_date = o.start_date, save
+
+    empty_string, o.start_date = o.start_date, empty_string
+    assert o.invalid?, "#{o.title} shouldn't be valid with blank start date"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:start_date]
+    empty_string, o.start_date = o.start_date, empty_string
+
+    save, o.start_time = o.start_time, save
+    assert o.invalid?, "#{o.title} shouldn't be valid with nil start time"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:start_time]
+    save, o.start_time = o.start_time, save
+
+    empty_string, o.start_time = o.start_time, empty_string
+    assert o.invalid?, "#{o.title} shouldn't be valid with blank start time"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:start_time]
+    empty_string, o.start_time = o.start_time, empty_string
+  end
+
+  test "End date and time exist" do
+    o = outages(:date_time_exists_tests)
+    empty_string = ""
+    save = nil
+
+    save, o.end_date = o.end_date, save
+    assert o.invalid?, "#{o.title} shouldn't be valid with nil end date"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:end_date]
+    save, o.end_date = o.end_date, save
+
+    empty_string, o.end_date = o.end_date, empty_string
+    assert o.invalid?, "#{o.title} shouldn't be valid with blank end date"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:end_date]
+    empty_string, o.end_date = o.end_date, empty_string
+
+    save, o.end_time = o.end_time, save
+    assert o.invalid?, "#{o.title} shouldn't be valid with nil end time"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:end_time]
+    save, o.end_time = o.end_time, save
+
+    empty_string, o.end_time = o.end_time, empty_string
+    assert o.invalid?, "#{o.title} shouldn't be valid with blank end time"
+    assert_equal [ MISSING_MESSAGE ], o.errors[:end_time]
+    empty_string, o.end_time = o.end_time, empty_string
   end
 end
