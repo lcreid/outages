@@ -100,4 +100,33 @@ class OutageTest < ActiveSupport::TestCase
     assert_equal [ MISSING_MESSAGE ], o.errors[:end_time]
     empty_string, o.end_time = o.end_time, empty_string
   end
+
+  test "End date before start date" do
+    o = outages(:date_time_exists_tests)
+    o.end_datetime_in_time_zone = o.start_datetime_in_time_zone - 1.day
+    refute o.valid?, "#{o} should be invalid."
+    assert_equal ["Start date must be before end date."], o.errors[:end_date]
+  end
+
+  test "Start datetime equals end datetime" do
+    o = outages(:date_time_exists_tests)
+    assert o.valid?, "#{o} should be valid. Found #{o.errors.messages}"
+    assert o.errors[:end_date].empty?, "End date errors not empty."
+    assert o.errors[:end_time].empty?, "End time errors not emtpy."
+  end
+
+  test "Dates equal, end time before start time" do
+    o = outages(:date_time_exists_tests)
+    o.end_datetime_in_time_zone = o.start_datetime_in_time_zone - 1.second
+    refute o.valid?, "#{o} should be invalid."
+    assert_equal ["Start time must be before end time."], o.errors[:end_time]
+  end
+
+  test "Invalid date format" do
+    skip
+  end
+
+  test "Invalid time format" do
+    skip
+  end
 end

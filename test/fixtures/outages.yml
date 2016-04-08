@@ -52,7 +52,7 @@ date_time_exists_tests:
   id: 6
   title: Date time exists tests
   start_date: 2016-04-04
-  start_time: 00:00:01
+  start_time: "00:00:01"
   end_date: 2016-04-04
-  end_time: 00:00:00
+  end_time: "00:00:02"
   time_zone: Samoa
