@@ -2,6 +2,10 @@ require 'test_helper'
 
 class OutageTest < ActiveSupport::TestCase
   MISSING_MESSAGE = "can't be blank"
+  DATE_FORMAT_MESSAGE = "must be yyyy[-mm[-dd]]"
+  TIME_FORMAT_MESSAGE = "must be hh[:mm[:ss]]"
+  TIME_MISSING_MESSAGES = [ MISSING_MESSAGE, TIME_FORMAT_MESSAGE ]
+  DATE_MISSING_MESSAGES = [ MISSING_MESSAGE, DATE_FORMAT_MESSAGE ]
 
   test "happy new year samoa" do
     o = outages(:happy_new_year_samoa)
@@ -38,7 +42,6 @@ class OutageTest < ActiveSupport::TestCase
   end
 
   test "Start date before end date" do
-    skip
     o = Outage.new(title: "end date before start date",
       start_date: "2016-04-04",
       start_time: "00:00:01",
@@ -46,7 +49,7 @@ class OutageTest < ActiveSupport::TestCase
       end_time: "00:00:00",
       time_zone: "Samoa")
     assert o.invalid?, "#{o.title} shouldn't be valid."
-    assert_equal ["Start date must be before end date"], o.errors.messages
+    assert_equal ["must be after start time."], o.errors[:end_time]
   end
 
   test "Start date and time exist" do
@@ -56,22 +59,22 @@ class OutageTest < ActiveSupport::TestCase
 
     save, o.start_date = o.start_date, save
     assert o.invalid?, "#{o.title} shouldn't be valid with nil start date"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:start_date]
+    assert_equal DATE_MISSING_MESSAGES, o.errors[:start_date]
     save, o.start_date = o.start_date, save
 
     empty_string, o.start_date = o.start_date, empty_string
     assert o.invalid?, "#{o.title} shouldn't be valid with blank start date"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:start_date]
+    assert_equal DATE_MISSING_MESSAGES, o.errors[:start_date]
     empty_string, o.start_date = o.start_date, empty_string
 
     save, o.start_time = o.start_time, save
     assert o.invalid?, "#{o.title} shouldn't be valid with nil start time"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:start_time]
+    assert_equal TIME_MISSING_MESSAGES, o.errors[:start_time]
     save, o.start_time = o.start_time, save
 
     empty_string, o.start_time = o.start_time, empty_string
     assert o.invalid?, "#{o.title} shouldn't be valid with blank start time"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:start_time]
+    assert_equal TIME_MISSING_MESSAGES, o.errors[:start_time]
     empty_string, o.start_time = o.start_time, empty_string
   end
 
@@ -82,22 +85,22 @@ class OutageTest < ActiveSupport::TestCase
 
     save, o.end_date = o.end_date, save
     assert o.invalid?, "#{o.title} shouldn't be valid with nil end date"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:end_date]
+    assert_equal DATE_MISSING_MESSAGES, o.errors[:end_date]
     save, o.end_date = o.end_date, save
 
     empty_string, o.end_date = o.end_date, empty_string
     assert o.invalid?, "#{o.title} shouldn't be valid with blank end date"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:end_date]
+    assert_equal DATE_MISSING_MESSAGES, o.errors[:end_date]
     empty_string, o.end_date = o.end_date, empty_string
 
     save, o.end_time = o.end_time, save
     assert o.invalid?, "#{o.title} shouldn't be valid with nil end time"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:end_time]
+    assert_equal TIME_MISSING_MESSAGES, o.errors[:end_time]
     save, o.end_time = o.end_time, save
 
     empty_string, o.end_time = o.end_time, empty_string
     assert o.invalid?, "#{o.title} shouldn't be valid with blank end time"
-    assert_equal [ MISSING_MESSAGE ], o.errors[:end_time]
+    assert_equal TIME_MISSING_MESSAGES, o.errors[:end_time]
     empty_string, o.end_time = o.end_time, empty_string
   end
 
@@ -105,7 +108,7 @@ class OutageTest < ActiveSupport::TestCase
     o = outages(:date_time_exists_tests)
     o.end_datetime_in_time_zone = o.start_datetime_in_time_zone - 1.day
     refute o.valid?, "#{o} should be invalid."
-    assert_equal ["Start date must be before end date."], o.errors[:end_date]
+    assert_equal ["must be after start date."], o.errors[:end_date]
   end
 
   test "Start datetime equals end datetime" do
@@ -119,14 +122,20 @@ class OutageTest < ActiveSupport::TestCase
     o = outages(:date_time_exists_tests)
     o.end_datetime_in_time_zone = o.start_datetime_in_time_zone - 1.second
     refute o.valid?, "#{o} should be invalid."
-    assert_equal ["Start time must be before end time."], o.errors[:end_time]
+    assert_equal ["must be after start time."], o.errors[:end_time]
   end
 
-  test "Invalid date format" do
-    skip
-  end
-
-  test "Invalid time format" do
-    skip
+  test "Invalid date and time formats" do
+    o = Outage.new({
+      start_date: "2014-123-01",
+      start_time: ":00:aa",
+      end_date: "2014-12-32",
+      end_time: "abd"
+      })
+    refute o.valid? "#{o} should be invalid."
+    assert_equal [DATE_FORMAT_MESSAGE], o.errors[:start_date]
+    assert_equal [TIME_FORMAT_MESSAGE], o.errors[:start_time]
+    assert_equal [DATE_FORMAT_MESSAGE, "must be after start date."], o.errors[:end_date]
+    assert_equal [TIME_FORMAT_MESSAGE], o.errors[:end_time]
   end
 end
