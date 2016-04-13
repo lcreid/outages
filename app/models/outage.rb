@@ -74,9 +74,9 @@ class Outage < ApplicationRecord
       start_time.blank? || end_time.blank?
 
     if end_date < start_date
-      errors.add(:end_date, "must be after start date.")
+      errors.add(:end_date, "must be after start date")
     elsif (start_date == end_date) && (end_time <= start_time)
-      errors.add(:end_time, "must be after start time.")
+      errors.add(:end_time, "must be after start time")
     end
   end
 

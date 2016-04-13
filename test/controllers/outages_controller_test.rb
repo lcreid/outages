@@ -136,4 +136,23 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'p#start-time', 'Start Time: 2015-12-30 23:00:00'
     assert_select 'p#end-time', 'End Time: 2015-12-30 23:00:01'
   end
+
+  test "show error message for bad date" do
+    post '/outages', params: {
+      outage: {
+        title: 'set time zone',
+        start_date: 'bad date',
+        start_time: '00:00:00',
+        end_date: '2016-01-01',
+        end_time: '00:00:01',
+        time_zone: tz = 'Pacific/Pago_Pago'
+      }
+    }
+    assert_select "#error-explanation", 1 do
+      assert_select "li", 2 do |errors|
+        assert_equal "Start date must be yyyy[-mm[-dd]]", errors[0].text
+        assert_equal "End date must be after start date", errors[1].text
+      end
+    end
+  end
 end

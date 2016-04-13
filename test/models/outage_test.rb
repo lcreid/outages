@@ -49,7 +49,7 @@ class OutageTest < ActiveSupport::TestCase
       end_time: "00:00:00",
       time_zone: "Samoa")
     assert o.invalid?, "#{o.title} shouldn't be valid."
-    assert_equal ["must be after start time."], o.errors[:end_time]
+    assert_equal ["must be after start time"], o.errors[:end_time]
   end
 
   test "Start date and time exist" do
@@ -108,7 +108,7 @@ class OutageTest < ActiveSupport::TestCase
     o = outages(:date_time_exists_tests)
     o.end_datetime_in_time_zone = o.start_datetime_in_time_zone - 1.day
     refute o.valid?, "#{o} should be invalid."
-    assert_equal ["must be after start date."], o.errors[:end_date]
+    assert_equal ["must be after start date"], o.errors[:end_date]
   end
 
   test "Start datetime equals end datetime" do
@@ -122,7 +122,7 @@ class OutageTest < ActiveSupport::TestCase
     o = outages(:date_time_exists_tests)
     o.end_datetime_in_time_zone = o.start_datetime_in_time_zone - 1.second
     refute o.valid?, "#{o} should be invalid."
-    assert_equal ["must be after start time."], o.errors[:end_time]
+    assert_equal ["must be after start time"], o.errors[:end_time]
   end
 
   test "Invalid date and time formats" do
@@ -135,7 +135,7 @@ class OutageTest < ActiveSupport::TestCase
     refute o.valid? "#{o} should be invalid."
     assert_equal [DATE_FORMAT_MESSAGE], o.errors[:start_date]
     assert_equal [TIME_FORMAT_MESSAGE], o.errors[:start_time]
-    assert_equal [DATE_FORMAT_MESSAGE, "must be after start date."], o.errors[:end_date]
+    assert_equal [DATE_FORMAT_MESSAGE, "must be after start date"], o.errors[:end_date]
     assert_equal [TIME_FORMAT_MESSAGE], o.errors[:end_time]
   end
 end
