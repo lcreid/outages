@@ -137,5 +137,17 @@ class OutageTest < ActiveSupport::TestCase
     assert_equal [TIME_FORMAT_MESSAGE], o.errors[:start_time]
     assert_equal [DATE_FORMAT_MESSAGE, "must be after start date"], o.errors[:end_date]
     assert_equal [TIME_FORMAT_MESSAGE], o.errors[:end_time]
+    assert_equal ["can't be blank"], o.errors[:time_zone]
+  end
+
+  test "Missing time_zone" do
+    o = Outage.new({
+      start_date: "2014-12-01",
+      start_time: "08:30",
+      end_date: "2014-12-01",
+      end_time: "09:00"
+      })
+    refute o.valid? "#{o} should be invalid."
+    assert_equal ["can't be blank"], o.errors[:time_zone]
   end
 end
