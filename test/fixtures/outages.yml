@@ -56,3 +56,27 @@ date_time_exists_tests:
   end_date: 2016-04-04
   end_time: "00:00:02"
   time_zone: Samoa
+
+calendar_tests_01:
+  title: First of February
+  start_date: 2016-02-01
+  start_time: "12:00:00"
+  end_date: 2016-02-01
+  end_time: "12:30:00"
+  time_zone: Samoa
+
+calendar_tests_02:
+  title: Last of February
+  start_date: 2016-02-29
+  start_time: "12:00:00"
+  end_date: 2016-02-29
+  end_time: "12:30:00"
+  time_zone: Samoa
+
+calendar_tests_03:
+  title: Mid February
+  start_date: 2016-02-15
+  start_time: "12:00:00"
+  end_date: 2016-02-15
+  end_time: "12:30:00"
+  time_zone: Samoa

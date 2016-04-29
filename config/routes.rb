@@ -3,7 +3,13 @@ Rails.application.routes.draw do
 
   # Serve websocket cable requests in-process
   # mount ActionCable.server => '/cable'
-  resources :outages
+  resources :outages do
+    collection do
+      OutagesController::CALENDAR_VIEWS.each do |view|
+        get view
+      end
+    end
+  end
 
   root 'home#index'
 end

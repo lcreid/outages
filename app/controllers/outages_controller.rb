@@ -1,4 +1,5 @@
 class OutagesController < ApplicationController
+  CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day']
   # Could I put the time one in a cookie?
   # For index, show, new, edit, the view looks to see if the
   # cookie has a time zone value. If it does, the field is set
@@ -17,6 +18,24 @@ class OutagesController < ApplicationController
 
   def index
     @outages = Outage.all
+  end
+
+  def month
+    # TODO: order by start datetime and select only in the current calendar.
+    @outages = Outage.all
+    # TODO: Fix the group by to use the date.
+    @outages_by_date = @outages.group_by(&:start_date)
+    # puts @outages_by_date
+    @date = Date.today
+  end
+
+  def week
+  end
+
+  def four_day
+  end
+
+  def day
   end
 
   def show

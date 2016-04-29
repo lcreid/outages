@@ -1,12 +1,27 @@
 require 'test_helper'
 
 class OutagesControllerTest < ActionDispatch::IntegrationTest
-  NUMBER_OF_OUTAGE_FIXTURES = 6
+  NUMBER_OF_OUTAGE_FIXTURES = 9
 
   test 'should get index' do
     get '/outages'
     assert_response :success
     assert_not_nil assigns(:outages)
+  end
+
+  # OutagesController::CALENDAR_VIEWS.each do |view|
+  ['month'].each do |view|
+    test "should get current #{view} view" do
+      Time.zone = 'Samoa'
+      test_time = Time.local(2016, 2, 1)
+      Timecop.freeze(test_time) do
+        get "/outages/#{view}"
+        assert_response :success
+        assert_select "##{view}" do |calendar|
+          assert_select calendar, ".title", 3
+        end
+      end
+    end
   end
 
   test 'should show ID 1' do
