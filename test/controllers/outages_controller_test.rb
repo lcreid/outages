@@ -18,7 +18,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
         get "/outages/#{view}"
         assert_response :success
         assert_select "##{view}" do |calendar|
-          assert_select calendar, ".title", 3
+          assert_select calendar, '.title', 3
         end
       end
     end
@@ -141,6 +141,34 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal tz, cookies['time_zone']
   end
 
+  test 'create should throw exception when no time zone' do
+    assert_raises RuntimeError do
+      post '/outages', params: {
+        outage: {
+          title: 'no time zone create',
+          start_date: '2016-01-01',
+          start_time: '00:00:00',
+          end_date: '2016-01-01',
+          end_time: '00:00:01'
+        }
+      }
+    end
+  end
+
+  test 'update should throw exception when no time zone' do
+    assert_raises RuntimeError do
+      put '/outages/1', params: {
+        outage: {
+          title: 'no time zone update',
+          start_date: '2016-01-01',
+          start_time: '00:00:00',
+          end_date: '2016-01-01',
+          end_time: '00:00:01'
+        }
+      }
+    end
+  end
+
   test 'get one outage with a different cookie' do
     cookies['time_zone'] = tz = 'Pacific/Pago_Pago'
     get '/outages/1'
@@ -152,7 +180,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'p#end-time', 'End Time: 2015-12-30 23:00:01'
   end
 
-  test "show error message for bad date" do
+  test 'show error message for bad date' do
     post '/outages', params: {
       outage: {
         title: 'set time zone',
@@ -163,10 +191,10 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
         time_zone: tz = 'Pacific/Pago_Pago'
       }
     }
-    assert_select "#error-explanation", 1 do
-      assert_select "li", 2 do |errors|
-        assert_equal "Start date must be yyyy[-mm[-dd]]", errors[0].text
-        assert_equal "End date must be after start date", errors[1].text
+    assert_select '#error-explanation', 1 do
+      assert_select 'li', 2 do |errors|
+        assert_equal 'Start date must be yyyy[-mm[-dd]]', errors[0].text
+        assert_equal 'End date must be after start date', errors[1].text
       end
     end
   end

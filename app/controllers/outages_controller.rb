@@ -1,5 +1,7 @@
 class OutagesController < ApplicationController
   CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day']
+  NO_TIME_ZONE_MSG = "Internal error: no time zone."
+
   # Could I put the time one in a cookie?
   # For index, show, new, edit, the view looks to see if the
   # cookie has a time zone value. If it does, the field is set
@@ -26,7 +28,7 @@ class OutagesController < ApplicationController
     # TODO: Fix the group by to use the date.
     @outages_by_date = @outages.group_by(&:start_date)
     # puts @outages_by_date
-    @date = Date.today
+    @date = Date.todayrai
   end
 
   def week
@@ -51,9 +53,10 @@ class OutagesController < ApplicationController
   end
 
   def create
+    raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
+    cookies[:time_zone] = outage_params[:time_zone]
     @outage = Outage.new(outage_params)
     # puts "Outage: #{outage_params.inspect} @outage.time_zone #{@outage.time_zone}"
-    cookies[:time_zone] = outage_params[:time_zone]
 
     if @outage.save
       redirect_to @outage
@@ -63,8 +66,9 @@ class OutagesController < ApplicationController
   end
 
   def update
-    @outage = Outage.find(params[:id])
+    raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
     cookies[:time_zone] = outage_params[:time_zone]
+    @outage = Outage.find(params[:id])
 
     if @outage.update(outage_params)
       redirect_to @outage
