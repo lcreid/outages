@@ -1,5 +1,4 @@
 class OutagesController < ApplicationController
-  CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day']
   NO_TIME_ZONE_MSG = "Internal error: no time zone."
 
   # Could I put the time one in a cookie?
@@ -18,6 +17,8 @@ class OutagesController < ApplicationController
 
   helper_method :cookies
 
+  # before_action at the end of this file.
+
   def index
     @outages = Outage.all
   end
@@ -28,7 +29,7 @@ class OutagesController < ApplicationController
     # TODO: Fix the group by to use the date.
     @outages_by_date = @outages.group_by(&:start_date)
     # puts @outages_by_date
-    @date = Date.todayrai
+    @date = Date.today
   end
 
   def week
@@ -93,4 +94,22 @@ class OutagesController < ApplicationController
     # TODO: Validate that date and time aren't nil.
     date.strip + 'T' + time.strip
   end
+
+  def require_time_zone
+    raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
+  end
+
+  # Some methods to support routing and testing of the calendar views.
+
+  CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day']
+
+  def self.calendar_views
+    CALENDAR_VIEWS
+  end
+
+  def self.calendar_actions
+    CALENDAR_VIEWS.map { |x| x.gsub(/[- ]/, "_").to_sym }
+  end
+
+  before_action :require_time_zone, only: OutagesController.calendar_actions + [:index]
 end

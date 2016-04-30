@@ -4,6 +4,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   NUMBER_OF_OUTAGE_FIXTURES = 9
 
   test 'should get index' do
+    cookies[:time_zone] = "Samoa"
     get '/outages'
     assert_response :success
     assert_not_nil assigns(:outages)
@@ -12,7 +13,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   # OutagesController::CALENDAR_VIEWS.each do |view|
   ['month'].each do |view|
     test "should get current #{view} view" do
-      Time.zone = 'Samoa'
+      Time.zone = cookies[:time_zone] = "Samoa"
       test_time = Time.local(2016, 2, 1)
       Timecop.freeze(test_time) do
         get "/outages/#{view}"
@@ -110,7 +111,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'post/create should set cookie from time zone setter' do
-    post '/outages', params: {
+    post '/outages?time_zone=Samoa', params: {
       outage: {
         title: 'set time zone',
         start_date: '2016-01-01',
@@ -141,9 +142,9 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal tz, cookies['time_zone']
   end
 
-  test 'create should throw exception when no time zone' do
+  test 'create should raise exception when no time zone' do
     assert_raises RuntimeError do
-      post '/outages', params: {
+      post '/outages?time_zone=Samoa', params: {
         outage: {
           title: 'no time zone create',
           start_date: '2016-01-01',
@@ -155,7 +156,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'update should throw exception when no time zone' do
+  test 'update should raise exception when no time zone' do
     assert_raises RuntimeError do
       put '/outages/1', params: {
         outage: {
@@ -195,6 +196,14 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
       assert_select 'li', 2 do |errors|
         assert_equal 'Start date must be yyyy[-mm[-dd]]', errors[0].text
         assert_equal 'End date must be after start date', errors[1].text
+      end
+    end
+  end
+
+  (OutagesController.calendar_views + [""]).map {|x| "/outages/" + x}.each do |action|
+    test "#{action} without time zone should raise exception" do
+      assert_raises RuntimeError do
+        get "#{action}"
       end
     end
   end

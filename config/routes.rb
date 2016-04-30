@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # mount ActionCable.server => '/cable'
   resources :outages do
     collection do
-      OutagesController::CALENDAR_VIEWS.each do |view|
+      OutagesController.calendar_views.each do |view|
         get view
       end
     end
