@@ -3,5 +3,7 @@ $(document).ready(function(){
   console.log(tz);
   var option = $("#user_time_zone option[value='" + tz +"']");
   console.log(option);
-  option[0].selected = true
+  option[0].selected = true;
+  document.cookie = "time_zone=" + tz;
+  console.log(document.cookie);
 });

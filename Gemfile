@@ -39,6 +39,9 @@ group :development, :test do
   gem 'byebug'
   gem 'rails-controller-testing'
   gem 'timecop'
+  gem 'capybara'
+  gem 'capybara-webkit'
+  gem 'headless'
 end
 
 group :development do

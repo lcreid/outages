@@ -1,7 +1,7 @@
 class OutagesController < ApplicationController
   NO_TIME_ZONE_MSG = "Internal error: no time zone."
 
-  # Could I put the time one in a cookie?
+  # Could I put the time zone in a cookie?
   # For index, show, new, edit, the view looks to see if the
   # cookie has a time zone value. If it does, the field is set
   # to the time zone. If not, it calls the JavaScript code to
@@ -14,6 +14,10 @@ class OutagesController < ApplicationController
   # Or, JavaScript can set cookie values (document.cookie = ),
   # so we just adjust the cookie when the user makes a selection.
   # I hope the action gets the modified cookie.
+  # So the cookie thing falls apart on the first request. If the
+  # user requests a page by, for example, typing into the address
+  # bar, we won't have any indication of the user's time zone.
+  # Whoa -- Should I do the time zone in the browser?
 
   helper_method :cookies
 
@@ -96,6 +100,7 @@ class OutagesController < ApplicationController
   end
 
   def require_time_zone
+    puts cookies
     raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
   end
 
