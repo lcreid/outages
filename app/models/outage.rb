@@ -5,7 +5,7 @@ class Outage < ApplicationRecord
   MISSING_DATE = "0000-01-01"
   MISSING_TIME = "00:00:00"
 
-  validates :start_date, :start_time, :end_date, :end_time, presence: true
+  validates :start_date, :start_time, :end_date, :end_time, :time_zone, presence: true
   validate :date_and_time_formats
   validate :start_datetime_before_end_datetime
 

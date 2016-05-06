@@ -1,4 +1,6 @@
 class OutagesController < ApplicationController
+  NO_TIME_ZONE_MSG = "Internal error: no time zone."
+
   # Could I put the time one in a cookie?
   # For index, show, new, edit, the view looks to see if the
   # cookie has a time zone value. If it does, the field is set
@@ -15,8 +17,28 @@ class OutagesController < ApplicationController
 
   helper_method :cookies
 
+  # before_action at the end of this file.
+
   def index
     @outages = Outage.all
+  end
+
+  def month
+    # TODO: order by start datetime and select only in the current calendar.
+    @outages = Outage.all
+    # TODO: Fix the group by to use the date.
+    @outages_by_date = @outages.group_by(&:start_date)
+    # puts @outages_by_date
+    @date = Date.today
+  end
+
+  def week
+  end
+
+  def four_day
+  end
+
+  def day
   end
 
   def show
@@ -32,9 +54,10 @@ class OutagesController < ApplicationController
   end
 
   def create
+    raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
+    cookies[:time_zone] = outage_params[:time_zone]
     @outage = Outage.new(outage_params)
     # puts "Outage: #{outage_params.inspect} @outage.time_zone #{@outage.time_zone}"
-    cookies[:time_zone] = outage_params[:time_zone]
 
     if @outage.save
       redirect_to @outage
@@ -44,8 +67,9 @@ class OutagesController < ApplicationController
   end
 
   def update
-    @outage = Outage.find(params[:id])
+    raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
     cookies[:time_zone] = outage_params[:time_zone]
+    @outage = Outage.find(params[:id])
 
     if @outage.update(outage_params)
       redirect_to @outage
@@ -70,4 +94,22 @@ class OutagesController < ApplicationController
     # TODO: Validate that date and time aren't nil.
     date.strip + 'T' + time.strip
   end
+
+  def require_time_zone
+    raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
+  end
+
+  # Some methods to support routing and testing of the calendar views.
+
+  CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day']
+
+  def self.calendar_views
+    CALENDAR_VIEWS
+  end
+
+  def self.calendar_actions
+    CALENDAR_VIEWS.map { |x| x.gsub(/[- ]/, "_").to_sym }
+  end
+
+  before_action :require_time_zone, only: OutagesController.calendar_actions + [:index]
 end

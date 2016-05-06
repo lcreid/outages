@@ -43,3 +43,6 @@ config/secrets.yml
 
 # Using npm/lots of JavaScript
 /node_modules
+
+# Ignore Vagrant's directory
+.vagrant/
