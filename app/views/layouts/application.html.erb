@@ -49,19 +49,6 @@
         <%= yield %>
       </div>
     </div>
-
-  <script type="text/javascript">
-    var ready = function() {
-      console.log("well, looky here!");
-      var tz;
-      tz = "<%=cookies[:time_zone]%>";
-      if (tz === "") tz = $().get_timezone();
-      // console.log(tz); var option = $("#outage_time_zone option[value='" + tz +"']"); console.log(option);
-      $("#user_time_zone option[value='" + tz + "']")[0].selected = true
-    };
-    $(document).on('page:load', ready);
-    $(document).on('ready', ready);
-  </script>
 </body>
 
 </html>

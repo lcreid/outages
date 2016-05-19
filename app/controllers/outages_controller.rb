@@ -75,7 +75,14 @@ class OutagesController < ApplicationController
   private
 
   def outage_params
-    params.require(:outage).permit(:title, :start_date, :start_time, :end_date, :end_time, :time_zone, :description)
+    params.require(:outage).permit(
+      :title,
+      :start_date,
+      :start_time,
+      :end_date,
+      :end_time,
+      :time_zone,
+      :description)
   end
 
   def combine(date, time)
@@ -84,8 +91,11 @@ class OutagesController < ApplicationController
   end
 
   def require_time_zone
-    puts cookies
-    raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
+    # puts cookies
+    # raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
+    # puts 'request.path ' + request.path
+    puts 'REDIRECTING...'
+    redirect_to time_zone_path(redirect_to: request.path) unless cookies[:time_zone]
   end
 
   # Some methods to support routing and testing of the calendar views.
@@ -100,7 +110,8 @@ class OutagesController < ApplicationController
     CALENDAR_VIEWS.map { |x| x.gsub(/[- ]/, "_").to_sym }
   end
 
-  before_action :require_time_zone, only: OutagesController.calendar_actions + [:index]
+  before_action :require_time_zone,
+    only: OutagesController.calendar_actions + [:index]
 end
 
 =begin

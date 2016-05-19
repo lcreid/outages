@@ -189,7 +189,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
         start_time: '00:00:00',
         end_date: '2016-01-01',
         end_time: '00:00:01',
-        time_zone: tz = 'Pacific/Pago_Pago'
+        time_zone: 'Pacific/Pago_Pago'
       }
     }
     assert_select '#error-explanation', 1 do
@@ -200,10 +200,10 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  (OutagesController.calendar_views + [""]).map {|x| "/outages/" + x}.each do |action|
+  (OutagesController.calendar_views + [""]).map { |x| "/outages/" + x }.each do |action|
     test "#{action} without time zone should raise exception" do
       assert_raises RuntimeError do
-        get "#{action}"
+        get action.to_s
       end
     end
   end
