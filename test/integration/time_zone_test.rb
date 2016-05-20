@@ -1,14 +1,14 @@
 require 'test_helper'
 
 class TimeZoneTest < ActionDispatch::IntegrationTest
+  Capybara::Webkit.configure do |config|
+    config.allow_url('www.atlasestateagents.co.uk')
+    config.allow_url('maxcdn.bootstrapcdn.com')
+    config.allow_url('code.jquery.com')
+  end
+
   def setup
     Capybara.current_driver = Capybara.javascript_driver # :webkit via test.rb
-
-    Capybara::Webkit.configure do |config|
-      config.allow_url('www.atlasestateagents.co.uk')
-      config.allow_url('maxcdn.bootstrapcdn.com')
-      config.allow_url('code.jquery.com')
-    end
 
     # @headless = Headless.new
     # @headless.start
@@ -31,7 +31,9 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     # ActiveSupport::TimeZone[`cat /etc/timezone`.strip].name
     assert_equal  'America/Los_Angeles',
                   page.driver.cookies['time_zone']
-    # follow_redirect!
+    assert_current_path(outages_path)
+    # Now that cookie is set, we should go straing to the page.
+    visit '/outages'
     assert_current_path(outages_path)
   end
   # test 'should use local time zone' do

@@ -94,7 +94,7 @@ class OutagesController < ApplicationController
     # puts cookies
     # raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
     # puts 'request.path ' + request.path
-    puts 'REDIRECTING...'
+    # puts 'REDIRECTING...'
     redirect_to time_zone_path(redirect_to: request.path) unless cookies[:time_zone]
   end
 
@@ -111,7 +111,7 @@ class OutagesController < ApplicationController
   end
 
   before_action :require_time_zone,
-    only: OutagesController.calendar_actions + [:index]
+              only: OutagesController.calendar_actions + [:index]
 end
 
 =begin
