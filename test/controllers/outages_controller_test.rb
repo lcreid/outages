@@ -91,7 +91,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     get '/outages'
     assert_response :success
     assert_not_nil assigns(:outages)
-    assert_select '#time-zone-setter option[selected]', tz
+    assert_select '#time_zone_setter option[selected]', tz
     assert_select 'tbody' do |table|
       assert_select table, 'tr', NUMBER_OF_OUTAGE_FIXTURES do |rows|
         assert_select rows[0], 'td' do |elements|
@@ -142,7 +142,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal tz, cookies['time_zone']
   end
 
-  test 'create should raise exception when no time zone' do
+  test 'create should raise error when no time zone' do
     assert_raises RuntimeError do
       post '/outages?time_zone=Samoa', params: {
         outage: {
@@ -156,7 +156,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'update should raise exception when no time zone' do
+  test 'update should raise error when no time zone' do
     assert_raises RuntimeError do
       put '/outages/1', params: {
         outage: {
@@ -201,10 +201,9 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   (OutagesController.calendar_views + [""]).map { |x| "/outages/" + x }.each do |action|
-    test "#{action} without time zone should raise exception" do
-      assert_raises RuntimeError do
-        get action.to_s
-      end
+    test "#{action} without time zone should redirect" do
+      get action.to_s
+      assert_redirected_to Regexp.new(Regexp.quote(time_zone_path) + '*')
     end
   end
 end

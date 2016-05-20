@@ -9,9 +9,9 @@ class TimeZoneController < ApplicationController
     cookies[:time_zone] = params
                           .require(:time_zone)
                           .permit(:time_zone)[:time_zone]
-    if params[:redirect_to]
-      # puts 'params[:redirect_to]: ' + params[:redirect_to]
-      redirect_to params[:redirect_to]
+    if params[:redirect]
+      # puts 'params[:redirect]: ' + params[:redirect]
+      redirect params[:redirect]
     else
       redirect_back fallback_location: :root
     end

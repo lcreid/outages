@@ -32,7 +32,7 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     assert_equal  'America/Los_Angeles',
                   page.driver.cookies['time_zone']
     assert_current_path(outages_path)
-    # Now that cookie is set, we should go straing to the page.
+    # Now that cookie is set, we should go straight to the page.
     visit '/outages'
     assert_current_path(outages_path)
   end
