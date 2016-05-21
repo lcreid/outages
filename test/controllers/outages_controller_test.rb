@@ -144,7 +144,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'create should raise error when no time zone' do
     assert_raises RuntimeError do
-      post '/outages?time_zone=Samoa', params: {
+      post '/outages', params: {
         outage: {
           title: 'no time zone create',
           start_date: '2016-01-01',

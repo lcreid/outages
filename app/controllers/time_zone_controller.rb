@@ -11,7 +11,7 @@ class TimeZoneController < ApplicationController
                           .permit(:time_zone)[:time_zone]
     if params[:redirect]
       # puts 'params[:redirect]: ' + params[:redirect]
-      redirect params[:redirect]
+      redirect_to params[:redirect]
     else
       redirect_back fallback_location: :root
     end

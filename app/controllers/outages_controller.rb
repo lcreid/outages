@@ -91,11 +91,11 @@ class OutagesController < ApplicationController
   end
 
   def require_time_zone
-    # puts cookies
+    # puts 'no cookie' unless cookies['time_zone']
     # raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
     # puts 'request.path ' + request.path
     # puts 'REDIRECTING...'
-    redirect_to time_zone_path(redirect: request.path) unless cookies[:time_zone]
+    redirect_to time_zone_path(redirect: request.path) unless cookies['time_zone']
   end
 
   # Some methods to support routing and testing of the calendar views.
