@@ -111,7 +111,7 @@ class OutagesController < ApplicationController
   end
 
   before_action :require_time_zone,
-              only: OutagesController.calendar_actions + [:index]
+                except: [:create, :update, :destroy]
 end
 
 =begin

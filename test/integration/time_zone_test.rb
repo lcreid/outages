@@ -36,12 +36,13 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     visit '/outages'
     assert_current_path(outages_path)
   end
-  # test 'should use local time zone' do
-  #   assert_nothing_raised do
-  #     visit '/outages'
-  #   end
-  #   assert_nothing_raised do
-  #     visit '/outages/1'
-  #   end
-  # end
+
+  test "User sets time zone" do
+    visit '/outages/1'
+    assert_current_path(time_zone_path, only_path: true)
+    select 'Pacific/Pago_Pago', from: 'time_zone_time_zone'
+    click_on 'Submit'
+    assert_equal 'Pacific%2FPago_Pago', page.driver.cookies['time_zone']
+    assert_current_path(outage_path(1))
+  end
 end

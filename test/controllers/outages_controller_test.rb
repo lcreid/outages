@@ -26,18 +26,21 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show ID 1' do
+    Time.zone = cookies[:time_zone] = "Samoa"
     get '/outages/1'
     assert_response :success
     assert_not_nil assigns(:outage)
   end
 
   test 'should get new outage' do
+    Time.zone = cookies[:time_zone] = "Samoa"
     get '/outages/new'
     assert_response :success
     assert_not_nil assigns(:outage)
   end
 
   test 'should edit outage 1' do
+    Time.zone = cookies[:time_zone] = "Samoa"
     get '/outages/1/edit'
     assert_response :success
     assert_not_nil(o = assigns(:outage))
