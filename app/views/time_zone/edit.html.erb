@@ -1,0 +1,5 @@
+<%= form_tag do %>
+  <%= render 'shared/time_zone_setter' %>
+  <%= hidden_field_tag 'redirect', params[:redirect] %>
+  <%= submit_tag 'Submit' %>
+<% end %>

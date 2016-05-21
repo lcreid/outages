@@ -1,19 +1,7 @@
 class OutagesController < ApplicationController
   NO_TIME_ZONE_MSG = "Internal error: no time zone."
 
-  # Could I put the time one in a cookie?
-  # For index, show, new, edit, the view looks to see if the
-  # cookie has a time zone value. If it does, the field is set
-  # to the time zone. If not, it calls the JavaScript code to
-  # set the time zone.
-  # For create and update, the time zone comes in the parameters.
-  # The action sets the cookie.
-  # So how do we send in the time zone in the parameters.
-  # We have a hidden field in the form that gets filled in by
-  # JavaScript every time the user selects a new time zone.
-  # Or, JavaScript can set cookie values (document.cookie = ),
-  # so we just adjust the cookie when the user makes a selection.
-  # I hope the action gets the modified cookie.
+  # See the end of this file for thoughts on time zone handling.
 
   helper_method :cookies
 
@@ -87,7 +75,14 @@ class OutagesController < ApplicationController
   private
 
   def outage_params
-    params.require(:outage).permit(:title, :start_date, :start_time, :end_date, :end_time, :time_zone, :description)
+    params.require(:outage).permit(
+      :title,
+      :start_date,
+      :start_time,
+      :end_date,
+      :end_time,
+      :time_zone,
+      :description)
   end
 
   def combine(date, time)
@@ -96,7 +91,11 @@ class OutagesController < ApplicationController
   end
 
   def require_time_zone
-    raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
+    # puts 'no cookie' unless cookies['time_zone']
+    # raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
+    # puts 'request.path ' + request.path
+    # puts 'REDIRECTING...'
+    redirect_to time_zone_path(redirect: request.path) unless cookies['time_zone']
   end
 
   # Some methods to support routing and testing of the calendar views.
@@ -111,5 +110,43 @@ class OutagesController < ApplicationController
     CALENDAR_VIEWS.map { |x| x.gsub(/[- ]/, "_").to_sym }
   end
 
-  before_action :require_time_zone, only: OutagesController.calendar_actions + [:index]
+  before_action :require_time_zone,
+                except: [:create, :update, :destroy]
 end
+
+=begin
+At first I thought:
+Could I put the time zone in a cookie?
+For index, show, new, edit, the view looks to see if the
+cookie has a time zone value. If it does, the field is set
+to the time zone. If not, it calls the JavaScript code to
+set the time zone.
+For create and update, the time zone comes in the parameters.
+The action sets the cookie.
+So how do we send in the time zone in the parameters.
+We have a hidden field in the form that gets filled in by
+JavaScript every time the user selects a new time zone.
+Or, JavaScript can set cookie values (document.cookie = ),
+so we just adjust the cookie when the user makes a selection.
+I hope the action gets the modified cookie.
+
+Then I realized:
+So the cookie thing falls apart on the first request. If the
+user requests a page by, for example, typing into the address
+bar, we won't have any indication of the user's time zone.
+
+And then:
+Whoa -- Should I do the time zone in the browser?
+That would mean the server would always return UTC, and the
+browser would do the change, which might also mean that we
+could change the time zone in the browser only (but with
+potential confusion because I might have selected a day based
+on one time zone. Switching the time zone in the browser without
+a new query might have the wrong records.)
+
+Also, I wonder if the browser can really be trusted to do time
+zones. We could be looking at something in the past or the future,
+where DST is different from current, and therefore the browser
+can't just apply the "current offset from UTC" to the time
+from the server.
+=end

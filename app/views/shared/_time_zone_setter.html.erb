@@ -1,0 +1,3 @@
+<div id="time_zone_setter" class="navbar-right">
+  <%= select "time_zone", "time_zone", ActiveSupport::TimeZone::MAPPING.values.uniq, selected: cookies[:time_zone] %>
+</div>
