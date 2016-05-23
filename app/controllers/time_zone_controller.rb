@@ -11,8 +11,8 @@ class TimeZoneController < ApplicationController
     self.current_time_zone = URI.decode(params
                                       .require(:time_zone)
                                       .permit(:time_zone)[:time_zone])
-    puts 'TimeZoneController.update just set the cookie: ' + current_time_zone
-    puts 'Now the cookie is: ' + current_time_zone
+    # puts 'TimeZoneController.update just set the cookie: ' + current_time_zone
+    # puts 'Now the cookie is: ' + current_time_zone
     if params[:redirect]
       # puts 'params[:redirect]: ' + params[:redirect]
       redirect_to params[:redirect]

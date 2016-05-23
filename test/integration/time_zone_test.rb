@@ -62,15 +62,22 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     assert_current_path(time_zone_path, only_path: true)
     select 'Pacific/Apia', from: 'time_zone_time_zone'
     click_on 'Submit'
-    puts 'Time zone cookies via driver: ' + driver_cookie('time_zone')
+    # puts 'Time zone cookies via driver: ' + driver_cookie('time_zone')
     # puts 'Time zone cookies via Rails: ' + current_time_zone
-    page.driver.console_messages.each { |m| puts m }
+    # page.driver.console_messages.each { |m| puts m }
     # assert_equal current_time_zone, driver_cookie('time_zone')
     assert_current_path outage_path(1)
     find('#start-time').assert_text('2016-01-01 00:00:00')
   end
 
   test "Time zone setter starts with cookie value if set" do
-    skip
+    visit outage_path(1)
+    select (tz = 'Pacific/Apia'), from: 'time_zone_time_zone'
+    assert_equal tz, find('#time_zone_time_zone').value
+    click_on 'Submit'
+    assert_current_path outage_path(1)
+    find('#set_time_zone').click
+    assert_current_path(time_zone_path, only_path: true)
+    assert_equal tz, find('#time_zone_time_zone').value
   end
 end

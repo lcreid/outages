@@ -3,7 +3,7 @@ class OutagesController < ApplicationController
 
   # See the end of this file for thoughts on time zone handling.
 
-  helper_method :cookies
+  # helper_method :cookies
 
   # before_action at the end of this file.
 
@@ -30,7 +30,7 @@ class OutagesController < ApplicationController
   end
 
   def show
-    puts 'In show time zone is: ' + current_time_zone
+    # puts 'In show time zone is: ' + current_time_zone
     @outage = Outage.find(params[:id])
   end
 
