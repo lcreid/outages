@@ -7,6 +7,10 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     config.allow_url('code.jquery.com')
   end
 
+  def driver_cookies(cookie_id)
+    URI.decode(page.driver.cookies[cookie_id])
+  end
+
   def setup
     Capybara.current_driver = Capybara.javascript_driver # :webkit via test.rb
 
@@ -40,9 +44,27 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
   test "User sets time zone" do
     visit '/outages/1'
     assert_current_path(time_zone_path, only_path: true)
-    select 'Pacific/Pago_Pago', from: 'time_zone_time_zone'
+    select (tz = 'Pacific/Pago_Pago'), from: 'time_zone_time_zone'
     click_on 'Submit'
-    assert_equal 'Pacific%2FPago_Pago', page.driver.cookies['time_zone']
+    assert_equal tz, driver_cookies('time_zone')
     assert_current_path(outage_path(1))
+  end
+
+  test "Changing time zone changes time displayed" do
+    visit outage_path(1)
+    select 'America/Los_Angeles', from: 'time_zone_time_zone'
+    click_on 'Submit'
+    assert_current_path outage_path(1)
+    find('#start-time').assert_text('2015-12-31 02:00:00')
+    find('#set_time_zone').click
+    # TODO: Why doesn't the following work?
+    # click_link '#set_time_zone'
+    select (tz = 'Pacific/Apia'), from: 'time_zone_time_zone'
+    click_on 'Submit'
+    puts 'Time zone cookies: ' + driver_cookies('time_zone')
+    page.driver.console_messages.each { |m| puts m }
+    assert_equal tz, driver_cookies('time_zone')
+    assert_current_path outage_path(1)
+    find('#start-time').assert_text('2016-01-01 00:00:00')
   end
 end

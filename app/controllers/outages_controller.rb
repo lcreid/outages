@@ -1,5 +1,7 @@
 class OutagesController < ApplicationController
-  NO_TIME_ZONE_MSG = "Internal error: no time zone."
+  include TimeZoneHelper
+
+  NO_TIME_ZONE_MSG = "Internal error: no time zone set."
 
   # See the end of this file for thoughts on time zone handling.
 
@@ -43,7 +45,8 @@ class OutagesController < ApplicationController
 
   def create
     raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
-    cookies[:time_zone] = outage_params[:time_zone]
+    current_time_zone = URI.decode(outage_params[:time_zone])
+    puts 'Create just set the cookie: ' + current_time_zone
     @outage = Outage.new(outage_params)
     # puts "Outage: #{outage_params.inspect} @outage.time_zone #{@outage.time_zone}"
 
@@ -56,7 +59,8 @@ class OutagesController < ApplicationController
 
   def update
     raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
-    cookies[:time_zone] = outage_params[:time_zone]
+    current_time_zone = URI.decode(outage_params[:time_zone])
+    puts 'Update just set the cookie: ' + current_time_zone
     @outage = Outage.find(params[:id])
 
     if @outage.update(outage_params)
@@ -91,11 +95,11 @@ class OutagesController < ApplicationController
   end
 
   def require_time_zone
-    # puts 'no cookie' unless cookies['time_zone']
-    # raise NO_TIME_ZONE_MSG unless cookies[:time_zone]
+    # puts 'no cookie' unless current_time_zone
+    # raise NO_TIME_ZONE_MSG unless current_time_zone
     # puts 'request.path ' + request.path
     # puts 'REDIRECTING...'
-    redirect_to time_zone_path(redirect: request.path) unless cookies['time_zone']
+    redirect_to time_zone_path(redirect: request.path) unless current_time_zone
   end
 
   # Some methods to support routing and testing of the calendar views.
