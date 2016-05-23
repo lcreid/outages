@@ -5,11 +5,11 @@
 </p>
 
 <p id="start-time">
-  <strong>Start Time:</strong> <%= @outage.start_datetime_in_time_zone_s(cookies['time_zone']) %>
+  <strong>Start Time:</strong> <%= @outage.start_datetime_in_time_zone_s(current_time_zone) %>
 </p>
 
 <p id="end-time">
-  <strong>End Time:</strong> <%= @outage.end_datetime_in_time_zone_s(cookies['time_zone']) %>
+  <strong>End Time:</strong> <%= @outage.end_datetime_in_time_zone_s(current_time_zone) %>
 </p>
 
 <p id="time-zone">

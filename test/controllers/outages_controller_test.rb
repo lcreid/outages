@@ -15,7 +15,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   # OutagesController::CALENDAR_VIEWS.each do |view|
   ['month'].each do |view|
     test "should get current #{view} view" do
-      Time.zone = self.current_time_zone = "Samoa"
+      self.current_time_zone = "Samoa"
       test_time = Time.local(2016, 2, 1)
       Timecop.freeze(test_time) do
         get "/outages/#{view}"
@@ -28,21 +28,21 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should show ID 1' do
-    Time.zone = self.current_time_zone = "Samoa"
+    self.current_time_zone = "Samoa"
     get '/outages/1'
     assert_response :success
     assert_not_nil assigns(:outage)
   end
 
   test 'should get new outage' do
-    Time.zone = self.current_time_zone = "Samoa"
+    self.current_time_zone = "Samoa"
     get '/outages/new'
     assert_response :success
     assert_not_nil assigns(:outage)
   end
 
   test 'should edit outage 1' do
-    Time.zone = self.current_time_zone = "Samoa"
+    self.current_time_zone = "Samoa"
     get '/outages/1/edit'
     assert_response :success
     assert_not_nil(o = assigns(:outage))
@@ -50,6 +50,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should create outage' do
+    self.current_time_zone = "Samoa"
     assert_difference 'Outage.count' do
       post '/outages', params: {
         outage: {
@@ -57,8 +58,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
           start_date: '2016-03-02',
           start_time: '18:37',
           end_date: '2016-03-02',
-          end_time: '20:00',
-          time_zone: 'Samoa'
+          end_time: '20:00'
         }
       }
     end
@@ -66,6 +66,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should update outage 1' do
+    self.current_time_zone = "Samoa"
     new_title = 'Happy New New Year Samoa'
     assert_no_difference 'Outage.count' do
       put '/outages/1', params: {
@@ -74,8 +75,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
           start_date: '2016-01-01',
           start_time: '00:00:00',
           end_date: '2016-01-01',
-          end_time: '00:00:01',
-          time_zone: 'Samoa'
+          end_time: '00:00:01'
         }
       }
     end
@@ -92,7 +92,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get index with time_zone from cookie' do
-    self.current_time_zone = tz = 'Pacific/Pago_Pago'
+    self.current_time_zone = 'Pacific/Pago_Pago'
     get '/outages'
     assert_response :success
     assert_not_nil assigns(:outages)
@@ -189,14 +189,14 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'show error message for bad date' do
+    self.current_time_zone = 'Pacific/Pago_Pago'
     post '/outages', params: {
       outage: {
         title: 'set time zone',
         start_date: 'bad date',
         start_time: '00:00:00',
         end_date: '2016-01-01',
-        end_time: '00:00:01',
-        time_zone: 'Pacific/Pago_Pago'
+        end_time: '00:00:01'
       }
     }
     assert_select '#error-explanation', 1 do

@@ -1,8 +1,6 @@
 class OutagesController < ApplicationController
   include TimeZoneHelper
 
-  NO_TIME_ZONE_MSG = "Internal error: no time zone set."
-
   # See the end of this file for thoughts on time zone handling.
 
   helper_method :cookies
@@ -44,10 +42,8 @@ class OutagesController < ApplicationController
   end
 
   def create
-    raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
-    current_time_zone = URI.decode(outage_params[:time_zone])
-    puts 'Create just set the cookie: ' + current_time_zone
-    @outage = Outage.new(outage_params)
+    params_for_saving = parms_with_time_zone_for_saving
+    @outage = Outage.new(params_for_saving)
     # puts "Outage: #{outage_params.inspect} @outage.time_zone #{@outage.time_zone}"
 
     if @outage.save
@@ -58,12 +54,10 @@ class OutagesController < ApplicationController
   end
 
   def update
-    raise NO_TIME_ZONE_MSG unless outage_params[:time_zone]
-    current_time_zone = URI.decode(outage_params[:time_zone])
-    puts 'Update just set the cookie: ' + current_time_zone
+    params_for_saving = parms_with_time_zone_for_saving
     @outage = Outage.find(params[:id])
 
-    if @outage.update(outage_params)
+    if @outage.update(params_for_saving)
       redirect_to @outage
     else
       render 'edit'
@@ -100,6 +94,12 @@ class OutagesController < ApplicationController
     # puts 'request.path ' + request.path
     # puts 'REDIRECTING...'
     redirect_to time_zone_path(redirect: request.path) unless current_time_zone
+  end
+
+  def parms_with_time_zone_for_saving
+    raise "Internal error: no time zone set." unless current_time_zone
+    params[:outage][:time_zone] = current_time_zone
+    outage_params
   end
 
   # Some methods to support routing and testing of the calendar views.

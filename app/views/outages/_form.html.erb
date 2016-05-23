@@ -36,7 +36,7 @@
   <%= f.time_field :end_time, value: @outage.end_time, ignore_date: true %>
 </p>
 
-<%= f.hidden_field :time_zone, value: cookies[:time_zone] %>
+<%= f.hidden_field :time_zone, value: current_time_zone %>
 
 <p>
   <%= f.label :description %><br>
