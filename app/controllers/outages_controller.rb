@@ -30,6 +30,7 @@ class OutagesController < ApplicationController
   end
 
   def show
+    puts 'In show time zone is: ' + current_time_zone
     @outage = Outage.find(params[:id])
   end
 

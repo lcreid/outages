@@ -36,7 +36,7 @@ class OutageTest < ActiveSupport::TestCase
     assert_equal "0000-01-01 00:00:00", o.start_datetime_in_time_zone_s
   end
 
-  test "No end date" do
+  test "No end time" do
     o = outages(:error_no_end_time)
     assert_equal "2016-01-01 00:00:00", o.end_datetime_in_time_zone_s
   end

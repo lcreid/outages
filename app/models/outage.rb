@@ -17,7 +17,7 @@ class Outage < ApplicationRecord
     parse(end_datetime_s).utc
   end
 
-  def start_datetime_in_time_zone(tz = self.time_zone)
+  def start_datetime_in_time_zone(tz = time_zone)
     datetime_in_time_zone(tz, start_datetime_utc)
   end
 
@@ -31,13 +31,13 @@ class Outage < ApplicationRecord
     datetime
   end
 
-  def start_datetime_in_time_zone_s(tz = self.time_zone)
+  def start_datetime_in_time_zone_s(tz = time_zone)
     # puts "Start time zone: #{tz}"
     # puts datetime_in_time_zone(tz, start_datetime_utc)
     datetime_in_time_zone(tz, start_datetime_utc).strftime(DATETIME_FORMAT)
   end
 
-  def end_datetime_in_time_zone_s(tz = self.time_zone)
+  def end_datetime_in_time_zone_s(tz = time_zone)
     # puts "End time zone: #{tz}"
     # puts datetime_in_time_zone(tz, end_datetime_utc)
     datetime_in_time_zone(tz, end_datetime_utc).strftime(DATETIME_FORMAT)
@@ -71,7 +71,7 @@ class Outage < ApplicationRecord
 
   def start_datetime_before_end_datetime
     return if start_date.blank? || end_date.blank? ||
-      start_time.blank? || end_time.blank?
+              start_time.blank? || end_time.blank?
 
     if end_date < start_date
       errors.add(:end_date, "must be after start date")
