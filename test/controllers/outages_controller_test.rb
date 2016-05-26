@@ -28,6 +28,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
 
   # OutagesController::CALENDAR_VIEWS.map.with_index do |view, i|
   assert_calendar('month', 3)
+  assert_calendar('week', 3)
 
   test 'should show ID 1' do
     self.current_time_zone = "Samoa"

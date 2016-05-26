@@ -12,15 +12,11 @@ class OutagesController < ApplicationController
   end
 
   def month
-    # TODO: order by start datetime and select only in the current calendar.
-    @outages = Outage.all
-    # TODO: Fix the group by to use the date.
-    @outages_by_date = @outages.group_by(&:start_date)
-    # puts @outages_by_date
-    @date = Date.today
+    calendar_action
   end
 
   def week
+    calendar_action
   end
 
   def four_day
@@ -113,6 +109,15 @@ class OutagesController < ApplicationController
 
   def self.calendar_actions
     CALENDAR_VIEWS.map { |x| x.gsub(/[- ]/, "_").to_sym }
+  end
+
+  def calendar_action
+    # TODO: order by start datetime and select only in the current calendar.
+    @outages = Outage.all
+    # TODO: Fix the group by to use the date.
+    @outages_by_date = @outages.group_by(&:start_date)
+    # puts @outages_by_date
+    @date = Date.today
   end
 
   before_action :require_time_zone,
