@@ -12,8 +12,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil assigns(:outages)
   end
 
-  # OutagesController::CALENDAR_VIEWS.each do |view|
-  ['month'].each do |view|
+  def self.assert_calendar(view, number_of_events)
     test "should get current #{view} view" do
       self.current_time_zone = "Samoa"
       test_time = Time.local(2016, 2, 1)
@@ -21,11 +20,14 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
         get "/outages/#{view}"
         assert_response :success
         assert_select "##{view}" do |calendar|
-          assert_select calendar, '.title', 3
+          assert_select calendar, '.title', number_of_events
         end
       end
     end
   end
+
+  # OutagesController::CALENDAR_VIEWS.map.with_index do |view, i|
+  assert_calendar('month', 3)
 
   test 'should show ID 1' do
     self.current_time_zone = "Samoa"
