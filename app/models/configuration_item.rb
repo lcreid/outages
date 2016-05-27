@@ -1,0 +1,2 @@
+class ConfigurationItem < ApplicationRecord
+end

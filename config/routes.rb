@@ -15,6 +15,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :configuration_items
+
   get '/time_zone', to: 'time_zone#edit'
   post '/time_zone/edit', to: 'time_zone#update'
 
