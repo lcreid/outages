@@ -11,4 +11,17 @@ class ConfigurationItemsControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to configuration_item_path(assigns(:configuration_item))
   end
+
+  test 'show error message for missing name' do
+    post '/configuration_items', params: {
+      configuration_item: {
+        name: ''
+      }
+    }
+    assert_select '#error-explanation', 1 do
+      assert_select 'li', 1 do |errors|
+        assert_equal "Name can't be blank", errors[0].text
+      end
+    end
+  end
 end
