@@ -1,14 +1,4 @@
-<% if @outage.errors.any? %>
-  <div id="error-explanation">
-    <h2><%= pluralize(@outage.errors.count, "error") %> prohibited this article from being saved:</h2>
-
-    <ul>
-    <% @outage.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-    </ul>
-  </div>
-<% end %>
+<%= render partial: 'shared/flash_area', locals: { model: @outage } %>
 
 <%= form_for :outage, url: outages_path do |f| %>
 <p>

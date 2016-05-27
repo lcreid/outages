@@ -1,4 +1,4 @@
-<%= render 'shared/flash_area' %>
+<%= render partial: 'shared/flash_area', locals: { model: @configuration_item } %>
 
 <%= form_for :configuration_item, url: configuration_items_path do |f| %>
 <p>
