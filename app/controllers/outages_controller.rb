@@ -20,9 +20,17 @@ class OutagesController < ApplicationController
   end
 
   def four_day
+    calendar_action
   end
 
   def day
+    calendar_action
+    @prev = @date.prev_day
+    @next = @date.next_day
+  end
+
+  def schedule
+    calendar_action
   end
 
   def show
@@ -90,7 +98,7 @@ class OutagesController < ApplicationController
     # raise NO_TIME_ZONE_MSG unless current_time_zone
     # puts 'request.path ' + request.path
     # puts 'REDIRECTING...'
-    redirect_to time_zone_path(redirect: request.path) unless current_time_zone
+    redirect_to time_zone_path(redirect: request.fullpath) unless current_time_zone
   end
 
   def parms_with_time_zone_for_saving
@@ -101,7 +109,7 @@ class OutagesController < ApplicationController
 
   # Some methods to support routing and testing of the calendar views.
 
-  CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day']
+  CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day', 'schedule']
 
   def self.calendar_views
     CALENDAR_VIEWS
@@ -117,11 +125,17 @@ class OutagesController < ApplicationController
     # TODO: Fix the group by to use the date.
     @outages_by_date = @outages.group_by(&:start_date)
     # puts @outages_by_date
-    @date = Date.today
+    @date = params[:date] ? Date.parse(params[:date]) : Date.today
   end
 
   before_action :require_time_zone,
                 except: [:create, :update, :destroy]
+
+  def set_time_zone
+    Time.use_zone(current_time_zone) { yield }
+  end
+
+  around_action :set_time_zone
 end
 
 =begin

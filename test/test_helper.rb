@@ -29,5 +29,27 @@ class ActionDispatch::IntegrationTest
     Capybara.reset_sessions!
     Capybara.use_default_driver
   end
+
+  def driver_cookie(cookie_id)
+    URI.decode(page.driver.cookies[cookie_id])
+  end
+
+  def setup
+    Capybara.current_driver = Capybara.javascript_driver # :webkit via test.rb
+
+    # @headless = Headless.new
+    # @headless.start
+  end
+
+  # def teardown
+  #   @headless.destroy
+  #   super # For Capybara
+  # end
+
+  Capybara::Webkit.configure do |config|
+    config.allow_url('www.atlasestateagents.co.uk')
+    config.allow_url('maxcdn.bootstrapcdn.com')
+    config.allow_url('code.jquery.com')
+  end
 end
 # End Capybara
