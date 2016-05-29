@@ -13,14 +13,20 @@ class OutagesController < ApplicationController
 
   def month
     calendar_action
+    @prev = @date.prev_month
+    @next = @date.next_month
   end
 
   def week
     calendar_action
+    @prev = @date.weeks_ago(1)
+    @next = @date.weeks_since(1)
   end
 
   def four_day
     calendar_action
+    @prev = @date.days_ago(4)
+    @next = @date.days_since(4)
   end
 
   def day
