@@ -41,4 +41,21 @@ class CalendarTest < ActionDispatch::IntegrationTest
                   ->(date) { four_day_outages_path(date) },
                   ->(date) { date.days_ago(4) })
   end
+
+  test 'Show all the different calendar views' do
+    date = Date.new(2016, 3, 15)
+    # Set up time zone
+    visit day_outages_path(date: date)
+    click_on 'Submit'
+    # Ready to go
+    assert_current_path day_outages_path(date: date)
+    click_on 'Week'
+    assert_current_path week_outages_path(date: date)
+    click_on 'Four Day'
+    assert_current_path four_day_outages_path(date: date)
+    click_on 'Month'
+    assert_current_path month_outages_path(date: date)
+    click_on 'Day'
+    assert_current_path day_outages_path(date: date)
+  end
 end
