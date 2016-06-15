@@ -137,10 +137,6 @@ class OutagesController < ApplicationController
   before_action :require_time_zone,
                 except: [:create, :update, :destroy]
 
-  def set_time_zone
-    Time.use_zone(current_time_zone) { yield }
-  end
-
   around_action :set_time_zone
 end
 

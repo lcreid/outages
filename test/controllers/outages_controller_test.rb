@@ -3,31 +3,31 @@ require 'test_helper'
 class OutagesControllerTest < ActionDispatch::IntegrationTest
   include TimeZoneHelper
 
-  NUMBER_OF_OUTAGE_FIXTURES = 9
+  NUMBER_OF_OUTAGE_FIXTURES = 15
 
   test 'should get index' do
-    self.current_time_zone = "Samoa"
+    self.current_time_zone = 'Samoa'
     get '/outages'
     assert_response :success
     assert_not_nil assigns(:outages)
   end
 
   test 'should show ID 1' do
-    self.current_time_zone = "Samoa"
+    self.current_time_zone = 'Samoa'
     get '/outages/1'
     assert_response :success
     assert_not_nil assigns(:outage)
   end
 
   test 'should get new outage' do
-    self.current_time_zone = "Samoa"
+    self.current_time_zone = 'Samoa'
     get '/outages/new'
     assert_response :success
     assert_not_nil assigns(:outage)
   end
 
   test 'should edit outage 1' do
-    self.current_time_zone = "Samoa"
+    self.current_time_zone = 'Samoa'
     get '/outages/1/edit'
     assert_response :success
     assert_not_nil(o = assigns(:outage))
@@ -35,7 +35,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should create outage' do
-    self.current_time_zone = "Samoa"
+    self.current_time_zone = 'Samoa'
     assert_difference 'Outage.count' do
       post '/outages', params: {
         outage: {
@@ -51,7 +51,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should update outage 1' do
-    self.current_time_zone = "Samoa"
+    self.current_time_zone = 'Samoa'
     new_title = 'Happy New New Year Samoa'
     assert_no_difference 'Outage.count' do
       put '/outages/1', params: {
@@ -192,7 +192,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  (OutagesController.calendar_views + [""]).map { |x| "/outages/" + x }.each do |action|
+  (OutagesController.calendar_views + ['']).map { |x| '/outages/' + x }.each do |action|
     test "#{action} without time zone should redirect" do
       get action.to_s
       assert_redirected_to Regexp.new(Regexp.quote(time_zone_path) + '*')
