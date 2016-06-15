@@ -6,10 +6,11 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   class <<self
     # I think this has to be a class method because it's called before
     # the class has been instantiated. It took a while to figure that out.
-    def assert_calendar(view, number_of_events)
+    def assert_calendar(view,
+                        number_of_events,
+                        test_time = Time.local(2016, 2, 1))
       test "should get current #{view} view" do
-        self.current_time_zone = "Samoa"
-        test_time = Time.local(2016, 2, 1)
+        self.current_time_zone = 'Samoa'
         Timecop.freeze(test_time) do
           get "/outages/#{view}"
           assert_response :success
@@ -25,6 +26,6 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   assert_calendar('month', 3)
   assert_calendar('week', 3)
   assert_calendar('four-day', 3)
-  assert_calendar('day', 3)
+  assert_calendar('day', 4, Time.local(2016, 6, 15))
   assert_calendar('schedule', 3)
 end

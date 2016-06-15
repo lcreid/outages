@@ -18,25 +18,25 @@ class CalendarTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "Show day and move back and forth" do
-    calendar_test(Date.new(2016, 3, 15),
+  test 'Show day and move back and forth' do
+    calendar_test(Date.new(2016, 6, 15),
                   ->(date) { day_outages_path(date) },
                   ->(date) { date.prev_day })
   end
 
-  test "Show week and move back and forth" do
+  test 'Show week and move back and forth' do
     calendar_test(Date.new(2016, 3, 15),
                   ->(date) { week_outages_path(date) },
                   ->(date) { date.weeks_ago(1) })
   end
 
-  test "Show month and move back and forth" do
+  test 'Show month and move back and forth' do
     calendar_test(Date.new(2016, 3, 15),
                   ->(date) { month_outages_path(date) },
                   ->(date) { date.prev_month })
   end
 
-  test "Show four-day and move back and forth" do
+  test 'Show four-day and move backand forth' do
     calendar_test(Date.new(2016, 3, 15),
                   ->(date) { four_day_outages_path(date) },
                   ->(date) { date.days_ago(4) })
