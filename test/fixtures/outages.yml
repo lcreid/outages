@@ -106,11 +106,11 @@ day_calendar_test_in_03:
   time_zone: Samoa
 
 day_calendar_test_in_04:
-  title: Should see me (inside 04)
-  start_date: "2016-06-15"
-  start_time: "15:00:00"
-  start_date: "2016-06-15"
-  start_time: "18:00:00"
+  title: Should see me (overlap both)
+  start_date: "2016-06-14"
+  start_time: "23:59:59"
+  start_date: "2016-06-16"
+  start_time: "00:00:00"
   time_zone: Samoa
 
 day_calendar_test_in_05:

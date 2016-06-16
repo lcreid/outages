@@ -7,6 +7,10 @@ class OutagesController < ApplicationController
 
   # before_action at the end of this file.
 
+  # TODO: Figure out why I couldn't use my method here.
+  before_action :set_requested_date,
+                only: [:month, :week, :four_day, :day, :schedule]
+
   def index
     @outages = Outage.all
   end
@@ -31,6 +35,8 @@ class OutagesController < ApplicationController
 
   def day
     calendar_action
+    @start_date = @date.beginning_of_day
+    @end_date = @date.next_day.beginning_of_day
     @prev = @date.prev_day
     @next = @date.next_day
   end
@@ -125,13 +131,29 @@ class OutagesController < ApplicationController
     CALENDAR_VIEWS.map { |x| x.gsub(/[- ]/, "_").to_sym }
   end
 
+  def set_requested_date
+    @date = params[:date] ? Date.parse(params[:date]) : Date.today
+  end
+
   def calendar_action
     # TODO: order by start datetime and select only in the current calendar.
-    @outages = Outage.all
+    # TODO: By storing the dates and times in a variety of time zones,
+    # this becomes a major performance issue. We have to select all and
+    # use filtering once we get things into Ruby objects.
+    # Fascinating: The fact that we don't restrict the range of items we're
+    # looking at affects the algorithm for the calendar, because we can't
+    # or don't want to enumerate massivley long intervals.
+    @outages = Outage.select { |x| x.overlaps(@start_date, @end_date) }
     # TODO: Fix the group by to use the date.
-    @outages_by_date = @outages.group_by(&:start_date)
+    @outages_by_date = @outages.reduce({}) { |a, e| a.merge(days(e)) { |k, o, n| o + n } }
     # puts @outages_by_date
-    @date = params[:date] ? Date.parse(params[:date]) : Date.today
+  end
+
+  def days(outage)
+    { outage.start_datetime_in_time_zone.beginning_of_day.to_date.to_s => [outage] }
+    (outage.start_datetime_in_time_zone.beginning_of_day.to_date...
+      outage.end_datetime_in_time_zone.beginning_of_day.to_date).to_a
+      .reduce({}) { |a, e| a.merge(e => [outage]) }
   end
 
   before_action :require_time_zone,

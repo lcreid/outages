@@ -7,6 +7,25 @@ class OutageTest < ActiveSupport::TestCase
   TIME_MISSING_MESSAGES = [ MISSING_MESSAGE, TIME_FORMAT_MESSAGE ]
   DATE_MISSING_MESSAGES = [ MISSING_MESSAGE, DATE_FORMAT_MESSAGE ]
 
+  test 'overlap' do
+    Time.use_zone('Samoa') do
+      start_time = Time.zone.local(2016, 4, 4, 0, 0, 1)
+      end_time = Time.zone.local(2016, 4, 4, 0, 10, 0)
+      o = Outage.new(title: 'Overlap',
+                     start_date: start_time.to_date.to_s,
+                     start_time: start_time.strftime('%H:%M:%S'),
+                     end_date: end_time.to_date.to_s,
+                     end_time: end_time.strftime('%H:%M:%S'),
+                     time_zone: 'Samoa')
+      assert o.does_not_intersect(start_time - 1.second, start_time)
+      assert o.does_not_intersect(end_time, end_time + 1.second)
+      assert o.intersect(start_time - 1.second, start_time + 1.second)
+      assert o.intersect(end_time - 1.second, end_time + 1.second)
+      assert o.intersect(start_time, start_time + 1.second)
+      assert o.intersect(end_time - 1.second, end_time)
+    end
+  end
+
   test "happy new year samoa" do
     o = outages(:happy_new_year_samoa)
     assert_equal Time.utc(2015, 12, 31, 10, 0, 0), o.start_datetime_utc

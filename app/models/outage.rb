@@ -21,7 +21,7 @@ class Outage < ApplicationRecord
     datetime_in_time_zone(tz, start_datetime_utc)
   end
 
-  def end_datetime_in_time_zone(tz)
+  def end_datetime_in_time_zone(tz = time_zone)
     datetime_in_time_zone(tz, end_datetime_utc)
   end
 
@@ -41,6 +41,19 @@ class Outage < ApplicationRecord
     # puts "End time zone: #{tz}"
     # puts datetime_in_time_zone(tz, end_datetime_utc)
     datetime_in_time_zone(tz, end_datetime_utc).strftime(DATETIME_FORMAT)
+  end
+
+  def intersect(start_time, end_time)
+    # puts 'self.start: ' + start_datetime_in_time_zone.to_s
+    # puts 'self.end: ' + end_datetime_in_time_zone.to_s
+    # puts 'start: ' + start_time.to_s
+    # puts 'end: ' + end_time.to_s
+    !does_not_intersect(start_time, end_time)
+  end
+
+  def does_not_intersect(start_time, end_time)
+    end_time <= start_datetime_in_time_zone ||
+      end_datetime_in_time_zone <= start_time
   end
 
   private
