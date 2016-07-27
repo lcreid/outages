@@ -1,4 +1,4 @@
-<%= render partial: 'shared/flash_area', locals: { model: @outage } %>
+<%= render partial: "shared/flash_area", locals: { model: @outage } %>
 
 <%= form_for :outage, url: outages_path do |f| %>
 <p>
@@ -32,7 +32,7 @@
 </p>
 
 <p>
-  <%= f.submit 'Save', class: "btn btn-default" %>
-  <%= link_to 'Cancel', outages_path, class: "btn btn-default", role: "button" %>
+  <%= f.submit "Save", class: "btn btn-default" %>
+  <%= link_to "Cancel", outages_path, class: "btn btn-default", role: "button" %>
 </p>
 <% end %>
