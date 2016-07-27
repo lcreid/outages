@@ -7,7 +7,7 @@ class OutagesController < ApplicationController
 
   # before_action at the end of this file.
 
-  # TODO: Figure out why I couldn't use my method here.
+  # TODO: Figure out why I couldn"t use my method here.
   before_action :set_requested_date,
                 only: [:month, :week, :four_day, :day, :schedule]
 
@@ -16,6 +16,13 @@ class OutagesController < ApplicationController
   end
 
   def month
+    @start_date = @date
+                  .beginning_of_month
+                  .beginning_of_week
+    @end_date = @date
+                .next_month
+                .end_of_week
+                .next_day
     calendar_action
     @prev = @date.prev_month
     @next = @date.next_month
@@ -28,15 +35,17 @@ class OutagesController < ApplicationController
   end
 
   def four_day
+    @start_date = @date
+    @end_date = @date + 4.days
     calendar_action
     @prev = @date.days_ago(4)
     @next = @date.days_since(4)
   end
 
   def day
-    calendar_action
     @start_date = @date.beginning_of_day
     @end_date = @date.next_day.beginning_of_day
+    calendar_action
     @prev = @date.prev_day
     @next = @date.next_day
   end
@@ -46,7 +55,7 @@ class OutagesController < ApplicationController
   end
 
   def show
-    # puts 'In show time zone is: ' + current_time_zone
+    # puts "In show time zone is: " + current_time_zone
     @outage = Outage.find(params[:id])
   end
 
@@ -66,7 +75,7 @@ class OutagesController < ApplicationController
     if @outage.save
       redirect_to @outage
     else
-      render 'new'
+      render "new"
     end
   end
 
@@ -77,7 +86,7 @@ class OutagesController < ApplicationController
     if @outage.update(params_for_saving)
       redirect_to @outage
     else
-      render 'edit'
+      render "edit"
     end
   end
 
@@ -101,15 +110,15 @@ class OutagesController < ApplicationController
   end
 
   def combine(date, time)
-    # TODO: Validate that date and time aren't nil.
-    date.strip + 'T' + time.strip
+    # TODO: Validate that date and time aren"t nil.
+    date.strip + "T" + time.strip
   end
 
   def require_time_zone
-    # puts 'no cookie' unless current_time_zone
+    # puts "no cookie" unless current_time_zone
     # raise NO_TIME_ZONE_MSG unless current_time_zone
-    # puts 'request.path ' + request.path
-    # puts 'REDIRECTING...'
+    # puts "request.path " + request.path
+    # puts "REDIRECTING..."
     redirect_to time_zone_path(redirect: request.fullpath) unless current_time_zone
   end
 
@@ -121,7 +130,7 @@ class OutagesController < ApplicationController
 
   # Some methods to support routing and testing of the calendar views.
 
-  CALENDAR_VIEWS = ['month', 'week', 'four-day', 'day', 'schedule']
+  CALENDAR_VIEWS = ["month", "week", "four-day", "day", "schedule"]
 
   def self.calendar_views
     CALENDAR_VIEWS
@@ -140,10 +149,10 @@ class OutagesController < ApplicationController
     # TODO: By storing the dates and times in a variety of time zones,
     # this becomes a major performance issue. We have to select all and
     # use filtering once we get things into Ruby objects.
-    # Fascinating: The fact that we don't restrict the range of items we're
-    # looking at affects the algorithm for the calendar, because we can't
-    # or don't want to enumerate massivley long intervals.
-    @outages = Outage.select { |x| x.overlaps(@start_date, @end_date) }
+    # Fascinating: The fact that we don"t restrict the range of items we"re
+    # looking at affects the algorithm for the calendar, because we can"t
+    # or don"t want to enumerate massivley long intervals.
+    @outages = Outage.select { |x| x.intersects?(@start_date, @end_date) }
     # TODO: Fix the group by to use the date.
     @outages_by_date = @outages.reduce({}) { |a, e| a.merge(days(e)) { |k, o, n| o + n } }
     # puts @outages_by_date
@@ -181,7 +190,7 @@ I hope the action gets the modified cookie.
 Then I realized:
 So the cookie thing falls apart on the first request. If the
 user requests a page by, for example, typing into the address
-bar, we won't have any indication of the user's time zone.
+bar, we won"t have any indication of the user"s time zone.
 
 And then:
 Whoa -- Should I do the time zone in the browser?
@@ -195,6 +204,6 @@ a new query might have the wrong records.)
 Also, I wonder if the browser can really be trusted to do time
 zones. We could be looking at something in the past or the future,
 where DST is different from current, and therefore the browser
-can't just apply the "current offset from UTC" to the time
+can"t just apply the "current offset from UTC" to the time
 from the server.
 =end

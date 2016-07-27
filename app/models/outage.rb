@@ -43,20 +43,47 @@ class Outage < ApplicationRecord
     datetime_in_time_zone(tz, end_datetime_utc).strftime(DATETIME_FORMAT)
   end
 
-  def intersect(start_time, end_time)
+  def intersects?(start_time, end_time)
     # puts 'self.start: ' + start_datetime_in_time_zone.to_s
     # puts 'self.end: ' + end_datetime_in_time_zone.to_s
     # puts 'start: ' + start_time.to_s
     # puts 'end: ' + end_time.to_s
-    !does_not_intersect(start_time, end_time)
+    !does_not_intersect?(start_time, end_time)
   end
 
-  def does_not_intersect(start_time, end_time)
-    end_time <= start_datetime_in_time_zone ||
-      end_datetime_in_time_zone <= start_time
+  # Some background on this code is in order:
+  # I figured this out on a project many years ago. I was going crazy trying
+  # to write SQL queries that would bring back overlapping time periods.
+  # I had already learned that the best thing to do was treat all intervals
+  # as open, closed intervals, meaning the start time is in the interval,
+  # while the end time is not. (Note: Don't necessarily do your user interface
+  # this way).
+  # Anyway, the breakthrough came as I was trying to draw all the combinations.
+  # I realized that the ones that did _not_ overlap, are simply the ones that
+  # where one ends before the other starts:
+  # |-----|
+  #    A
+  #         |---|
+  #           B
+  #             |-----|
+  #                C
+  # A and B don't overlap because A ends before B starts. B and C don't
+  # overlap because the end point of B isn't in the interval, so it too
+  # ends before C starts.
+  # That leads to the "does not intersect" below, and intersect is just
+  # the inverse. (Bonus marks: Apply de Morgan's law to implement the
+  # "intersect" method.)
+  def does_not_intersect?(start_time, end_time)
+    begin
+      end_time <= start_datetime_in_time_zone ||
+        end_datetime_in_time_zone <= start_time
+    rescue
+      true
+    end
   end
 
   private
+
   def parse(s)
     ActiveSupport::TimeZone[time_zone].parse(s)
   end
@@ -70,7 +97,7 @@ class Outage < ApplicationRecord
   end
 
   def datetime_s(date, time)
-    (date || MISSING_DATE) + " " + (time || MISSING_TIME)
+    (date || MISSING_DATE) + ' ' + (time || MISSING_TIME)
   end
 
   # def to_tz(tz)

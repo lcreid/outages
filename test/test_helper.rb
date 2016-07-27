@@ -1,6 +1,6 @@
-ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
-require 'rails/test_help'
+ENV["RAILS_ENV"] ||= "test"
+require File.expand_path("../../config/environment", __FILE__)
+require "rails/test_help"
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
@@ -17,7 +17,7 @@ class ActionDispatch::IntegrationTest
 end
 
 # Added for Capybara
-require 'capybara/rails'
+require "capybara/rails"
 
 class ActionDispatch::IntegrationTest
   # Make the Capybara DSL available in all integration tests
@@ -47,9 +47,9 @@ class ActionDispatch::IntegrationTest
   # end
 
   Capybara::Webkit.configure do |config|
-    config.allow_url('www.atlasestateagents.co.uk')
-    config.allow_url('maxcdn.bootstrapcdn.com')
-    config.allow_url('code.jquery.com')
+    config.allow_url("www.atlasestateagents.co.uk")
+    config.allow_url("maxcdn.bootstrapcdn.com")
+    config.allow_url("code.jquery.com")
   end
 end
 # End Capybara

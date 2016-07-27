@@ -17,12 +17,12 @@ class OutageTest < ActiveSupport::TestCase
                      end_date: end_time.to_date.to_s,
                      end_time: end_time.strftime('%H:%M:%S'),
                      time_zone: 'Samoa')
-      assert o.does_not_intersect(start_time - 1.second, start_time)
-      assert o.does_not_intersect(end_time, end_time + 1.second)
-      assert o.intersect(start_time - 1.second, start_time + 1.second)
-      assert o.intersect(end_time - 1.second, end_time + 1.second)
-      assert o.intersect(start_time, start_time + 1.second)
-      assert o.intersect(end_time - 1.second, end_time)
+      assert o.does_not_intersect?(start_time - 1.second, start_time)
+      assert o.does_not_intersect?(end_time, end_time + 1.second)
+      assert o.intersects?(start_time - 1.second, start_time + 1.second)
+      assert o.intersects?(end_time - 1.second, end_time + 1.second)
+      assert o.intersects?(start_time, start_time + 1.second)
+      assert o.intersects?(end_time - 1.second, end_time)
     end
   end
 

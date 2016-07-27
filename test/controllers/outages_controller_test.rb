@@ -7,7 +7,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
 
   test 'should get index' do
     self.current_time_zone = 'Samoa'
-    get '/outages'
+    get :index
     assert_response :success
     assert_not_nil assigns(:outages)
   end
