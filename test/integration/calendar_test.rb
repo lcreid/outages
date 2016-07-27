@@ -1,7 +1,12 @@
 require "test_helper"
+require "capybara/poltergeist"
 
 class CalendarTest < ActionDispatch::IntegrationTest
   include TimeZoneHelper
+
+  def setup
+    Capybara.javascript_driver = :poltergeist
+  end
 
   def calendar_test(date, path, prev_date)
     # Set the time zone cookie

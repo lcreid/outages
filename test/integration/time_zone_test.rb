@@ -1,6 +1,12 @@
 require "test_helper"
+require "capybara/poltergeist"
 
 class TimeZoneTest < ActionDispatch::IntegrationTest
+  def setup
+    Capybara.javascript_driver = :poltergeist
+    Capybara.current_driver = Capybara.javascript_driver
+  end
+
   test "Get time zone from browser default when it's not set in cookie" do
     # page.driver.clear_cookies
     visit "/outages"
@@ -11,8 +17,9 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     # puts page.driver.console_messages
     # TODO: Make this work in other time zones.
     # ActiveSupport::TimeZone[`cat /etc/timezone`.strip].name
+    # TODO: Find out why/where Rails encodes cookies
     assert_equal  "America/Los_Angeles",
-                  driver_cookie("time_zone")
+                  URI.decode(page.driver.cookies["time_zone"].value)
     assert_current_path(outages_path)
     # Now that cookie is set, we should go straight to the page.
     visit "/outages"
@@ -24,7 +31,8 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     assert_current_path(time_zone_path, only_path: true)
     select (tz = "Pacific/Pago_Pago"), from: "time_zone_time_zone"
     click_on "Submit"
-    assert_equal tz, driver_cookie("time_zone")
+    # TODO: Find out why/where Rails encodes cookies
+    assert_equal tz, URI.decode(page.driver.cookies["time_zone"].value)
     assert_current_path(outage_path(1))
   end
 
@@ -40,10 +48,10 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     assert_current_path(time_zone_path, only_path: true)
     select "Pacific/Apia", from: "time_zone_time_zone"
     click_on "Submit"
-    # puts "Time zone cookies via driver: " + driver_cookie("time_zone")
+    # puts "Time zone cookies via driver: " + page.driver.cookies["time_zone"].value
     # puts "Time zone cookies via Rails: " + current_time_zone
     # page.driver.console_messages.each { |m| puts m }
-    # assert_equal current_time_zone, driver_cookie("time_zone")
+    # assert_equal current_time_zone, page.driver.cookies["time_zone"].value
     assert_current_path outage_path(1)
     find("#start-time").assert_text("2016-01-01 00:00:00")
   end

@@ -10,13 +10,26 @@ function get_cookie(name) {
 }
 
 $(document).ready(function(){
+  // console.log("Raw cookie value: " + get_cookie('time_zone'));
   var tz = get_cookie('time_zone');
-  if(! tz) tz = $().get_timezone();
-  console.log(tz);
+  // console.log("Time zone from JavaScript from cookie: " + tz);
+  if(!tz) {
+    tz = $().get_timezone();
+    // console.log("Really got time zone from JavaScript: " + tz);
+  }
+  else {
+    tz = decodeURIComponent(tz);
+  }
+  // console.log("Time zone from JavaScript or decode: " + tz);
   var option = $("#time_zone_setter option[value='" + tz +"']");
-  console.log(option[0]);
-  option[0].selected = true;
+  if(option[0]) {
+    // console.log(option[0]);
+    option[0].selected = true;
+  }
+  else {
+    // console.log("Couldn't find time_zone_setter for " + tz);
+  }
   // document.cookie = "time_zone=" + tz;
-  console.log("Whole cookie: " + document.cookie);
-  console.log("tz: " + tz);
+  // console.log("Whole cookie: " + document.cookie);
+  // console.log("tz: " + tz);
 });
