@@ -6,9 +6,8 @@
   <%= link_to "Four Day", four_day_outages_path(date: @date), id: "calendar-four-day" %>
   <%= link_to "Week", week_outages_path(date: @date), id: "calendar-week" %>
   <%= link_to "Month", month_outages_path(date: @date), id: "calendar-month" %>
-  <%= calendar @date do |date| %>
+  <%= calendar @date, @start_date, @end_date do |date| %>
     <%= date.day %>
-    <!-- TODO: DRY up or get rid of date to string in the view. -->
     <% if @outages_by_date[date] %>
       <ul>
         <% @outages_by_date[date].each do |outage| %>

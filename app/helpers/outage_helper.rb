@@ -1,10 +1,11 @@
 module OutageHelper
-  def calendar(date = Date.today, &block)
-    Calendar.new(self, date, block).table
+  def calendar(date = Date.today, start_date, end_date, &block)
+    # puts date, start_date, end_date
+    Calendar.new(self, date, start_date, end_date, block).table
   end
 
-  class Calendar < Struct.new(:view, :date, :callback)
-    HEADER = %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday]
+  class Calendar < Struct.new(:view, :date, :start_date, :end_date, :callback)
+    HEADER = %w(Sunday Monday Tuesday Wednesday Thursday Friday Saturday).freeze
     START_DAY = :sunday
 
     delegate :content_tag, to: :view
@@ -17,7 +18,9 @@ module OutageHelper
 
     def header
       content_tag :tr do
-        HEADER.map { |day| content_tag :th, day }.join.html_safe
+        weeks[0]
+          .map { |day| content_tag :th, day.strftime("%A") }.join.html_safe
+        # HEADER.map { |day| content_tag :th, day }.join.html_safe
       end
     end
 
@@ -41,9 +44,12 @@ module OutageHelper
     end
 
     def weeks
-      first = date.beginning_of_month.beginning_of_week(START_DAY)
-      last = date.end_of_month.end_of_week(START_DAY)
-      (first..last).to_a.in_groups_of(7)
+      # first = date.beginning_of_month.beginning_of_week(START_DAY)
+      # last = date.end_of_month.end_of_week(START_DAY)
+      first = start_date
+      last = end_date
+      # puts((first...last).to_a.in_groups_of(7).inspect)
+      (first...last).to_a.in_groups_of(7, false)
     end
   end
 end
