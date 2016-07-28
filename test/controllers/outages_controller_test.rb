@@ -3,7 +3,7 @@ require "test_helper"
 class OutagesControllerTest < ActionDispatch::IntegrationTest
   include TimeZoneHelper
 
-  NUMBER_OF_OUTAGE_FIXTURES = 15
+  NUMBER_OF_OUTAGE_FIXTURES = 16
 
   test "should get index" do
     self.current_time_zone = "Samoa"

@@ -1,17 +1,17 @@
 <div id="<%= view %>">
-  <%= link_to '<<', { controller: controller_name, action: action_name, date: @prev }, id: 'calendar-previous' %>
+  <%= link_to "<<", { controller: controller_name, action: action_name, date: @prev }, id: "calendar-previous" %>
   <%= @date %>
-  <%= link_to '>>', { controller: controller_name, action: action_name, date: @next }, id: 'calendar-next' %>
-  <%= link_to 'Day', day_outages_path(date: @date), id: 'calendar-day' %>
-  <%= link_to 'Four Day', four_day_outages_path(date: @date), id: 'calendar-four-day' %>
-  <%= link_to 'Week', week_outages_path(date: @date), id: 'calendar-week' %>
-  <%= link_to 'Month', month_outages_path(date: @date), id: 'calendar-month' %>
+  <%= link_to ">>", { controller: controller_name, action: action_name, date: @next }, id: "calendar-next" %>
+  <%= link_to "Day", day_outages_path(date: @date), id: "calendar-day" %>
+  <%= link_to "Four Day", four_day_outages_path(date: @date), id: "calendar-four-day" %>
+  <%= link_to "Week", week_outages_path(date: @date), id: "calendar-week" %>
+  <%= link_to "Month", month_outages_path(date: @date), id: "calendar-month" %>
   <%= calendar @date do |date| %>
     <%= date.day %>
     <!-- TODO: DRY up or get rid of date to string in the view. -->
-    <% if @outages_by_date[date.to_s] %>
+    <% if @outages_by_date[date] %>
       <ul>
-        <% @outages_by_date[date.to_s].each do |outage| %>
+        <% @outages_by_date[date].each do |outage| %>
           <li class="title"><%= link_to outage.title, outage %></li>
         <% end %>
       </ul>

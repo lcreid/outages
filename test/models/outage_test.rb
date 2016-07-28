@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class OutageTest < ActiveSupport::TestCase
   MISSING_MESSAGE = "can't be blank"
@@ -7,16 +7,16 @@ class OutageTest < ActiveSupport::TestCase
   TIME_MISSING_MESSAGES = [ MISSING_MESSAGE, TIME_FORMAT_MESSAGE ]
   DATE_MISSING_MESSAGES = [ MISSING_MESSAGE, DATE_FORMAT_MESSAGE ]
 
-  test 'overlap' do
-    Time.use_zone('Samoa') do
+  test "overlap" do
+    Time.use_zone("Samoa") do
       start_time = Time.zone.local(2016, 4, 4, 0, 0, 1)
       end_time = Time.zone.local(2016, 4, 4, 0, 10, 0)
-      o = Outage.new(title: 'Overlap',
+      o = Outage.new(title: "Overlap",
                      start_date: start_time.to_date.to_s,
-                     start_time: start_time.strftime('%H:%M:%S'),
+                     start_time: start_time.strftime("%H:%M:%S"),
                      end_date: end_time.to_date.to_s,
-                     end_time: end_time.strftime('%H:%M:%S'),
-                     time_zone: 'Samoa')
+                     end_time: end_time.strftime("%H:%M:%S"),
+                     time_zone: "Samoa")
       assert o.does_not_intersect?(start_time - 1.second, start_time)
       assert o.does_not_intersect?(end_time, end_time + 1.second)
       assert o.intersects?(start_time - 1.second, start_time + 1.second)
@@ -62,11 +62,11 @@ class OutageTest < ActiveSupport::TestCase
 
   test "Start date before end date" do
     o = Outage.new(title: "end date before start date",
-      start_date: "2016-04-04",
-      start_time: "00:00:01",
-      end_date: "2016-04-04",
-      end_time: "00:00:00",
-      time_zone: "Samoa")
+                   start_date: "2016-04-04",
+                   start_time: "00:00:01",
+                   end_date: "2016-04-04",
+                   end_time: "00:00:00",
+                   time_zone: "Samoa")
     assert o.invalid?, "#{o.title} shouldn't be valid."
     assert_equal ["must be after start time"], o.errors[:end_time]
   end
@@ -145,12 +145,12 @@ class OutageTest < ActiveSupport::TestCase
   end
 
   test "Invalid date and time formats" do
-    o = Outage.new({
+    o = Outage.new(
       start_date: "2014-123-01",
       start_time: ":00:aa",
       end_date: "2014-12-32",
       end_time: "abd"
-      })
+    )
     refute o.valid? "#{o} should be invalid."
     assert_equal [DATE_FORMAT_MESSAGE], o.errors[:start_date]
     assert_equal [TIME_FORMAT_MESSAGE], o.errors[:start_time]
@@ -160,13 +160,44 @@ class OutageTest < ActiveSupport::TestCase
   end
 
   test "Missing time_zone" do
-    o = Outage.new({
+    o = Outage.new(
       start_date: "2014-12-01",
       start_time: "08:30",
       end_date: "2014-12-01",
       end_time: "09:00"
-      })
+    )
     refute o.valid? "#{o} should be invalid."
     assert_equal ["can't be blank"], o.errors[:time_zone]
+  end
+
+  test "time intersection" do
+    o = outages(:day_calendar_test_in_05)
+    tz = ActiveSupport::TimeZone["Samoa"]
+    assert o.intersects?(tz.local(2016, 6, 15), tz.local(2016, 6, 16))
+  end
+
+  test "days method long outage" do
+    o = outages(:long_outage_01)
+    Time.use_zone("Samoa") do
+      assert_equal(
+        {
+          Time.local(2016, 7, 15).to_date => [o],
+          Time.local(2016, 7, 16).to_date => [o],
+          Time.local(2016, 7, 17).to_date => [o],
+          Time.local(2016, 7, 18).to_date => [o],
+          Time.local(2016, 7, 19).to_date => [o]
+        }, o.days)
+    end
+  end
+
+  test "days method short outage" do
+    o = outages(:day_calendar_test_in_02)
+    Time.use_zone("Samoa") do
+      assert_equal(
+        {
+          Time.local(2016, 6, 14).to_date => [o],
+          Time.local(2016, 6, 15).to_date => [o]
+        }, o.days)
+    end
   end
 end

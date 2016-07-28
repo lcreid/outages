@@ -16,42 +16,37 @@ class OutagesController < ApplicationController
   end
 
   def month
-    @start_date = @date
-                  .beginning_of_month
-                  .beginning_of_week
-    @end_date = @date
-                .next_month
-                .end_of_week
-                .next_day
-    calendar_action
+    calendar_action(@date
+                    .beginning_of_month
+                    .beginning_of_week,
+                    @date
+                    .end_of_month
+                    .end_of_week
+                    .next_day)
     @prev = @date.prev_month
     @next = @date.next_month
   end
 
   def week
-    calendar_action
+    calendar_action(@date.beginning_of_week, (@date + 1.week).beginning_of_week)
     @prev = @date.weeks_ago(1)
     @next = @date.weeks_since(1)
   end
 
   def four_day
-    @start_date = @date
-    @end_date = @date + 4.days
-    calendar_action
+    calendar_action(@date, @date + 4.days)
     @prev = @date.days_ago(4)
     @next = @date.days_since(4)
   end
 
   def day
-    @start_date = @date.beginning_of_day
-    @end_date = @date.next_day.beginning_of_day
-    calendar_action
+    calendar_action(@date, @date.next_day)
     @prev = @date.prev_day
     @next = @date.next_day
   end
 
   def schedule
-    calendar_action
+    calendar_action(@date, @date.next_day)
   end
 
   def show
@@ -144,25 +139,33 @@ class OutagesController < ApplicationController
     @date = params[:date] ? Date.parse(params[:date]) : Date.today
   end
 
-  def calendar_action
+  def calendar_action(start_date, end_date)
+    @start_date = start_date
+    @end_date = end_date
+
+    # puts "Start date: #{@start_date}, end date: #{@end_date}"
+
     # TODO: order by start datetime and select only in the current calendar.
     # TODO: By storing the dates and times in a variety of time zones,
     # this becomes a major performance issue. We have to select all and
     # use filtering once we get things into Ruby objects.
     # Fascinating: The fact that we don"t restrict the range of items we"re
     # looking at affects the algorithm for the calendar, because we can"t
-    # or don"t want to enumerate massivley long intervals.
-    @outages = Outage.select { |x| x.intersects?(@start_date, @end_date) }
-    # TODO: Fix the group by to use the date.
-    @outages_by_date = @outages.reduce({}) { |a, e| a.merge(days(e)) { |k, o, n| o + n } }
-    # puts @outages_by_date
-  end
-
-  def days(outage)
-    { outage.start_datetime_in_time_zone.beginning_of_day.to_date.to_s => [outage] }
-    (outage.start_datetime_in_time_zone.beginning_of_day.to_date...
-      outage.end_datetime_in_time_zone.beginning_of_day.to_date).to_a
-      .reduce({}) { |a, e| a.merge(e => [outage]) }
+    # or don"t want to enumerate massively long intervals.
+    @outages = Outage.all.select do |x|
+      # If I don't make the Dates into Times with beginning_of_day,
+      # intersects? doesn't work.
+      x.intersects?(@start_date.beginning_of_day, @end_date.beginning_of_day)
+    end
+    # puts "Outages: ", JSON.pretty_generate(@outages)
+    @outages_by_date = @outages.reduce({}) do |a, e|
+      a.merge(e.days) { |_k, o, n| o + n }
+    end
+    # puts "Outages by Date before trim: ", JSON.pretty_generate(@outages_by_date)
+    @outages_by_date.delete_if do |k, _v|
+      !(@start_date.beginning_of_day...@end_date.beginning_of_day).cover?(k)
+    end
+    # puts "Outages by Date after trim: ", JSON.pretty_generate(@outages_by_date)
   end
 
   before_action :require_time_zone,

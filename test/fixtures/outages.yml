@@ -83,48 +83,56 @@ calendar_tests_03:
 
 day_calendar_test_not_in_01:
   title: Should not see me (before)
-  start_date: "2016-06-15"
+  start_date: "2016-06-14"
   start_time: "22:59:59"
-  start_date: "2016-06-15"
-  start_time: "23:59:59"
+  end_date: "2016-06-15"
+  end_time: "00:00:00"
   time_zone: Samoa
 
 day_calendar_test_in_02:
   title: Should see me (overlap start)
   start_date: "2016-06-14"
   start_time: "22:59:59"
-  start_date: "2016-06-15"
-  start_time: "00:00:00"
+  end_date: "2016-06-15"
+  end_time: "00:00:01"
   time_zone: Samoa
 
 day_calendar_test_in_03:
   title: Should see me (inside 03)
   start_date: "2016-06-15"
   start_time: "11:00:00"
-  start_date: "2016-06-15"
-  start_time: "13:00:00"
+  end_date: "2016-06-15"
+  end_time: "13:00:00"
   time_zone: Samoa
 
 day_calendar_test_in_04:
   title: Should see me (overlap both)
   start_date: "2016-06-14"
   start_time: "23:59:59"
-  start_date: "2016-06-16"
-  start_time: "00:00:00"
+  end_date: "2016-06-16"
+  end_time: "00:00:00"
   time_zone: Samoa
 
 day_calendar_test_in_05:
-    title: Should see me (overlap end)
-    start_date: "2016-06-15"
-    start_time: "22:59:59"
-    start_date: "2016-06-16"
-    start_time: "00:00:00"
-    time_zone: Samoa
+  title: Should see me (overlap end)
+  start_date: "2016-06-15"
+  start_time: "22:59:59"
+  end_date: "2016-06-16"
+  end_time: "00:00:00"
+  time_zone: Samoa
 
 day_calendar_test_not_in_06:
   title: Should not see me (after)
   start_date: "2016-06-16"
   start_time: "00:00:00"
-  start_date: "2016-06-16"
-  start_time: "00:00:01"
+  end_date: "2016-06-16"
+  end_time: "00:00:01"
+  time_zone: Samoa
+
+long_outage_01:
+  title: Long Outage 01
+  start_date: "2016-07-15"
+  start_time: "23:59:59"
+  end_date: "2016-07-19"
+  end_time: "00:00:01"
   time_zone: Samoa

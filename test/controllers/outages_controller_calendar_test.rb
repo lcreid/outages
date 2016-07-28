@@ -14,6 +14,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
         Timecop.freeze(test_time) do
           get "/outages/#{view}"
           assert_response :success
+          # puts response.body
           assert_select "##{view}" do |calendar|
             assert_select calendar, ".title", number_of_events
           end
@@ -24,8 +25,9 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
 
   # OutagesController::CALENDAR_VIEWS.map.with_index do |view, i|
   assert_calendar("month", 3)
-  assert_calendar("week", 3)
-  assert_calendar("four-day", 3)
+  assert_calendar("week", 1)
+  assert_calendar("four-day", 1, Time.local(2016, 2, 12))
   assert_calendar("day", 4, Time.local(2016, 6, 15))
-  assert_calendar("schedule", 3)
+  # FIXME: schedule view should do something different
+  assert_calendar("schedule", 4, Time.local(2016, 6, 15))
 end

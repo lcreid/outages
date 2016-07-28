@@ -44,11 +44,18 @@ class Outage < ApplicationRecord
   end
 
   def intersects?(start_time, end_time)
-    # puts 'self.start: ' + start_datetime_in_time_zone.to_s
-    # puts 'self.end: ' + end_datetime_in_time_zone.to_s
-    # puts 'start: ' + start_time.to_s
-    # puts 'end: ' + end_time.to_s
+    # puts "self.start: " + start_datetime_in_time_zone.to_s
+    # puts "self.end: " + end_datetime_in_time_zone.to_s
+    # puts "start: " + start_time.to_s
+    # puts "end: " + end_time.to_s
+    # puts !does_not_intersect?(start_time, end_time)
     !does_not_intersect?(start_time, end_time)
+  end
+
+  def days
+    start_datetime_utc.in_time_zone.to_date
+                      .upto(end_datetime_utc.in_time_zone.to_date)
+                      .reduce({}) { |a, e| a.merge(e => [self]) }
   end
 
   # Some background on this code is in order:
@@ -59,7 +66,7 @@ class Outage < ApplicationRecord
   # while the end time is not. (Note: Don't necessarily do your user interface
   # this way).
   # Anyway, the breakthrough came as I was trying to draw all the combinations.
-  # I realized that the ones that did _not_ overlap, are simply the ones that
+  # I realized that the ones that did _not_ overlap, are simply the ones
   # where one ends before the other starts:
   # |-----|
   #    A
@@ -74,12 +81,10 @@ class Outage < ApplicationRecord
   # the inverse. (Bonus marks: Apply de Morgan's law to implement the
   # "intersect" method.)
   def does_not_intersect?(start_time, end_time)
-    begin
-      end_time <= start_datetime_in_time_zone ||
-        end_datetime_in_time_zone <= start_time
-    rescue
-      true
-    end
+    end_time.utc <= start_datetime_utc ||
+      end_datetime_utc <= start_time.utc
+  rescue
+    true
   end
 
   private
@@ -97,7 +102,7 @@ class Outage < ApplicationRecord
   end
 
   def datetime_s(date, time)
-    (date || MISSING_DATE) + ' ' + (time || MISSING_TIME)
+    (date || MISSING_DATE) + " " + (time || MISSING_TIME)
   end
 
   # def to_tz(tz)
