@@ -4,6 +4,26 @@ module OutageHelper
     Calendar.new(self, date, start_date, end_date, block).table
   end
 
+  def simple_outage_list(date, events)
+    # delegate :content_tag, to: self
+    s = content_tag :p, date.day
+    # puts s
+    if events[date]
+      s += content_tag :ul do
+        debug = events[date].map do |event|
+          content_tag :li, class: "title" do
+            # puts link_to(event.title, event)
+            link_to event.title, event
+          end
+        end.join.html_safe
+        # puts "Content Tags: " + debug.to_s
+      end
+      # puts s.html_safe
+      # puts s
+    end
+    s
+  end
+
   class Calendar < Struct.new(:view, :date, :start_date, :end_date, :callback)
     HEADER = %w(Sunday Monday Tuesday Wednesday Thursday Friday Saturday).freeze
     START_DAY = :sunday
