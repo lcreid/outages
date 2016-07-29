@@ -24,6 +24,9 @@ module OutageHelper
     s
   end
 
+  def day_schedule_outage_list(date, events)
+  end
+
   class Calendar < Struct.new(:view, :date, :start_date, :end_date, :callback)
     HEADER = %w(Sunday Monday Tuesday Wednesday Thursday Friday Saturday).freeze
     START_DAY = :sunday

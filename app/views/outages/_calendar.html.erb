@@ -7,6 +7,6 @@
   <%= link_to "Week", week_outages_path(date: @date), id: "calendar-week" %>
   <%= link_to "Month", month_outages_path(date: @date), id: "calendar-month" %>
   <%= calendar @date, @start_date, @end_date do |date| %>
-    <%= simple_outage_list date, @outages_by_date %>
+    <%= yield(date) %>
   <% end %>
 </div>

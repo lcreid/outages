@@ -1,1 +1,3 @@
-<%= render partial: "calendar", locals: { view: "month" } %>
+<%= render layout: "calendar", locals: { view: "month" } do |date| %>
+  <%= simple_outage_list date, @outages_by_date %>
+<% end %>
