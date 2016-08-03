@@ -30,4 +30,23 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
   assert_calendar("day", 4, Time.local(2016, 6, 15))
   # FIXME: schedule view should do something different
   assert_calendar("schedule", 4, Time.local(2016, 6, 15))
+
+  test "rows in day view" do
+    day_view_test(Time.local(2016, 6, 15), 48)
+  end
+
+  test "rows in day view on DST change long" do
+    day_view_test(Time.local(2016, 11, 6), 50)
+  end
+
+  test "rows in day view on DST change short" do
+    day_view_test(Time.local(2016, 3, 13), 46)
+  end
+
+  def day_view_test(date, result_count)
+    self.current_time_zone = "America/Los_Angeles"
+    get "/outages/day?date=#{date.strftime('%Y-%m-%d')}"
+    assert_response :success
+    assert_select ".day-by-half-hour li", result_count
+  end
 end

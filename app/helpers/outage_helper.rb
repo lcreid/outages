@@ -25,16 +25,17 @@ module OutageHelper
   end
 
   def day_schedule_outage_list(date, events)
-    s = content_tag :p, date.day
-    s += content_tag :ul do
-      t = Time.new(2016, 7, 29, 8)
-      (0.minutes...2.hours).step(15.minutes).map do |time|
-        puts t + time
-        content_tag :li, (t + time).strftime("%H:%M")
-      end.join.html_safe
+    content_tag :div, class: "day-by-half-hour" do
+      s = content_tag :p, date.day
+      s += content_tag :ul do
+        (0...((date.to_time + 1.day) - date.to_time)).step(30.minutes).map do |time|
+          # puts date + time.seconds
+          content_tag :li, (date.to_time + time).strftime("%H:%M")
+        end.join.html_safe
+      end
+      # puts s
+      s
     end
-    puts s
-    s
   end
 
   class Calendar < Struct.new(:view, :date, :start_date, :end_date, :callback)
