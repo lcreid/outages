@@ -1,4 +1,4 @@
-<div id="<%= view %>">
+<div class="<%= 'calendar-' + view %>">
   <%= link_to "<<", { controller: controller_name, action: action_name, date: @prev }, id: "calendar-previous" %>
   <%= @date %>
   <%= link_to ">>", { controller: controller_name, action: action_name, date: @next }, id: "calendar-next" %>

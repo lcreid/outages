@@ -15,7 +15,7 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
           get "/outages/#{view}"
           assert_response :success
           # puts response.body
-          assert_select "##{view}" do |calendar|
+          assert_select(".calendar-#{view}", 1) do |calendar|
             assert_select calendar, ".title", number_of_events
           end
         end

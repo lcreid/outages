@@ -2,13 +2,30 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+$half-hour-height: 36px;
+
 .day-by-half-hour {
   ul {
     list-style-type: none;
     margin-left: 0;
     padding-left: 0;
     li {
-      line-height: 100%/24;
+      line-height: $half-hour-height;
+      border-style: solid;
+      border-width: thin;
+      width: 100%;
+      .outage {
+        padding-left: 20px;
+        // @.bg-info;
+      }
     }
   }
+}
+
+.calendar-day {
+  width: 100%;
+}
+
+.calendar {
+  width: 100%;
 }

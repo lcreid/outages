@@ -1,11 +1,12 @@
 module OutageHelper
+  INTERVAL = 30.minutes
+
   def calendar(date = Date.today, start_date, end_date, &block)
     # puts date, start_date, end_date
     Calendar.new(self, date, start_date, end_date, block).table
   end
 
   def simple_outage_list(date, events)
-    # delegate :content_tag, to: self
     s = content_tag :p, date.day
     # puts s
     if events[date]
@@ -28,13 +29,36 @@ module OutageHelper
     content_tag :div, class: "day-by-half-hour" do
       s = content_tag :p, date.day
       s += content_tag :ul do
-        (0...((date.to_time + 1.day) - date.to_time)).step(30.minutes).map do |time|
+        (0...((date.to_time + 1.day) - date.to_time)).step(INTERVAL).map do |half_hour|
           # puts date + time.seconds
-          content_tag :li, (date.to_time + time).strftime("%H:%M")
+          content_tag :li do
+            time = (date.in_time_zone + half_hour)
+            a = []
+            a << time.strftime("%H:%M")
+            a << day_schedule_outage(time, events[date])
+            a.join.html_safe
+          end
         end.join.html_safe
       end
       # puts s
       s
+    end
+  end
+
+  def day_schedule_outage(time, outages)
+    return unless outages
+    # puts "Outages: " + outages.length.to_s
+    # puts "Date: " + time.to_date.to_s
+    # puts "Start time: " + time.to_s
+    outages.select do |event|
+      # puts "#{event.start_datetime_utc.in_time_zone}, #{event.end_datetime_utc.in_time_zone}"
+      # puts "#{event.start_datetime_on_date(time.to_date)}, #{event.end_datetime_on_date(time.to_date)}"
+      # puts "#{time}, #{time + INTERVAL}"
+      # puts((time...time + INTERVAL).cover?(event.start_datetime_on_date(time.to_date)) ? "true": "false")
+      (time...time + INTERVAL)
+        .cover? event.start_datetime_on_date(time.to_date)
+    end.map do |event|
+      content_tag(:span, link_to(event.title, event), class: "outage title bg-info")
     end
   end
 
@@ -78,12 +102,8 @@ module OutageHelper
     end
 
     def weeks
-      # first = date.beginning_of_month.beginning_of_week(START_DAY)
-      # last = date.end_of_month.end_of_week(START_DAY)
-      first = start_date
-      last = end_date
       # puts((first...last).to_a.in_groups_of(7).inspect)
-      (first...last).to_a.in_groups_of(7, false)
+      (start_date.to_date...end_date.to_date).to_a.in_groups_of(7, false)
     end
   end
 end

@@ -58,6 +58,16 @@ class Outage < ApplicationRecord
                       .reduce({}) { |a, e| a.merge(e => [self]) }
   end
 
+  def start_datetime_on_date(date)
+    [start_datetime_utc.in_time_zone, date.in_time_zone].max unless
+      end_datetime_utc.in_time_zone < date.in_time_zone
+  end
+
+  def end_datetime_on_date(date)
+    [date.in_time_zone + 1.day, end_datetime_utc.in_time_zone].min unless
+      (date.in_time_zone + 1.day) <= start_datetime_utc.in_time_zone
+  end
+
   # Some background on this code is in order:
   # I figured this out on a project many years ago. I was going crazy trying
   # to write SQL queries that would bring back overlapping time periods.
