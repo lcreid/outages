@@ -1,5 +1,6 @@
 module OutageHelper
   INTERVAL = 30.minutes
+  HALF_HOUR_HEIGHT = 36
 
   def calendar(date = Date.today, start_date, end_date, &block)
     # puts date, start_date, end_date
@@ -11,7 +12,7 @@ module OutageHelper
     # puts s
     if events[date]
       s += content_tag :ul do
-        debug = events[date].map do |event|
+        events[date].map do |event|
           content_tag :li, class: "title" do
             # puts link_to(event.title, event)
             link_to event.title, event
@@ -25,6 +26,10 @@ module OutageHelper
     s
   end
 
+  # I think this approach might be unnecessarily difficult. The "column for
+  # time, columns for dates" approach will be simpler in many ways.
+  # Overlaps will be simpler processing each outage as it comes up in the
+  # sorted list.
   def day_schedule_outage_list(date, events)
     content_tag :div, class: "day-by-half-hour" do
       s = content_tag :p, date.day
@@ -34,8 +39,11 @@ module OutageHelper
           content_tag :li do
             time = (date.in_time_zone + half_hour)
             a = []
-            a << time.strftime("%H:%M")
-            a << day_schedule_outage(time, events[date])
+            a << content_tag(:div, time.strftime("%H:%M"), class: "times")
+            # a << day_schedule_outage(time, events[date])
+            a << content_tag(:div,
+                             day_schedule_outage(time, events[date]).join.html_safe,
+                             class: "outages")
             a.join.html_safe
           end
         end.join.html_safe
@@ -46,7 +54,7 @@ module OutageHelper
   end
 
   def day_schedule_outage(time, outages)
-    return unless outages
+    return [] unless outages
     # puts "Outages: " + outages.length.to_s
     # puts "Date: " + time.to_date.to_s
     # puts "Start time: " + time.to_s
@@ -58,8 +66,24 @@ module OutageHelper
       (time...time + INTERVAL)
         .cover? event.start_datetime_on_date(time.to_date)
     end.map do |event|
-      content_tag(:span, link_to(event.title, event), class: "outage title bg-info")
+      link_to(h(event.title), event, class: "outage-1 title", style: "height: #{event.duration(time.to_date) / (30 * 60) * HALF_HOUR_HEIGHT}px;")
     end
+  end
+
+  # I got this from the accepted answer at:
+  # http://stackoverflow.com/questions/19085937/finding-intervals-of-a-set-that-are-overlapping
+  # I think the original answer was for open-open intervals. I think of open-
+  # closed I need to swap the -1 and 1.
+  def overlaps(outages)
+    start_stop_list = outages.reduce([]) do |a, e|
+      a << [e.start_datetime_utc, -1, e]
+      a << [e.end_datetime_utc, 1, e]
+    end.sort
+    # .each do |x| puts "#{x[2].id} #{x[2].start_datetime_utc} #{x[1]}" }
+    # TODO: Make this more closure-like.
+    result = 0
+    n = 0
+    start_stop_list.each { |x| result += n if x[2] == -1; n -= x[2] }
   end
 
   class Calendar < Struct.new(:view, :date, :start_date, :end_date, :callback)

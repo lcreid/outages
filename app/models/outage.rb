@@ -68,6 +68,11 @@ class Outage < ApplicationRecord
       (date.in_time_zone + 1.day) <= start_datetime_utc.in_time_zone
   end
 
+  def duration(date = nil)
+    return end_datetime_utc.in_time_zone - start_datetime_utc.in_time_zone unless date
+    end_datetime_on_date(date) - start_datetime_on_date(date)
+  end
+
   # Some background on this code is in order:
   # I figured this out on a project many years ago. I was going crazy trying
   # to write SQL queries that would bring back overlapping time periods.

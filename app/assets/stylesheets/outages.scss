@@ -3,6 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 $half-hour-height: 36px;
+$outage-padding-left: 40px;
 
 .day-by-half-hour {
   ul {
@@ -10,13 +11,26 @@ $half-hour-height: 36px;
     margin-left: 0;
     padding-left: 0;
     li {
-      line-height: $half-hour-height;
+      height: $half-hour-height;
       border-style: solid;
       border-width: thin;
       width: 100%;
-      .outage {
-        padding-left: 20px;
-        // @.bg-info;
+      div.times {
+        float: left;
+        width: 19%;
+      }
+      div.outages {
+        position: relative;
+        float: left;
+        width: 79%;
+        .outage-1 {
+          top: 0;
+          // padding-left: $outage-padding-left;
+          background-color: LightCyan;
+          position: absolute;
+          width: 100%;
+          // @.bg-info;
+        }
       }
     }
   }
