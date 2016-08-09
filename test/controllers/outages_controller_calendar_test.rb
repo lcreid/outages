@@ -47,6 +47,6 @@ class OutagesControllerTest < ActionDispatch::IntegrationTest
     self.current_time_zone = "America/Los_Angeles"
     get "/outages/day?date=#{date.strftime('%Y-%m-%d')}"
     assert_response :success
-    assert_select ".day-by-half-hour li", result_count
+    assert_select ".col-times li", result_count
   end
 end

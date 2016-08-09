@@ -1,3 +1,5 @@
 <%= render layout: "calendar", locals: { view: "week" } do |date| %>
-  <%= simple_outage_list date, @outages_by_date %>
+  <%= calendar @date, @start_date, @end_date, @outages_by_date do |date| %>
+    <%= simple_outage_list date, @outages_by_date %>
+  <% end %>
 <% end %>

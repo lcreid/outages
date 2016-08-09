@@ -2,19 +2,90 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-$half-hour-height: 36px;
+$row-interval-height: 36px;
 $outage-padding-left: 40px;
+
+%undecorated-list {
+  list-style-type: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+%calendar-li {
+  height: $row-interval-height;
+  border-style: solid;
+  border-width: thin;
+  width: 100%;
+}
+
+%debug-borders {
+  border-style: solid;
+  border-width: thin;
+}
+
+@mixin outage-common($number_of_columns) {
+  float: left;
+  width: (100% / $number_of_columns);
+  position: relative;
+}
+
+.calendar {
+  @extend %debug-borders;
+
+  width: 100%;
+
+  .row-dates {
+    @extend %debug-borders;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .col-times {
+    @extend %debug-borders;
+    float: left;
+    width: 50px;
+    .time {
+    }
+  }
+
+  .col-outages-1 {
+    @include outage-common(1);
+  }
+  .col-outages-4 {
+    @include outage-common(4);
+  }
+  .col-outages-7 {
+    @include outage-common(7);
+  }
+
+  .outages-body {
+    @extend %debug-borders;
+  }
+
+  .outages {
+    @extend %debug-borders;
+    float: left;
+    width: 200px;
+    .outage {
+      background-color: LightCyan;
+      position: absolute;
+    }
+  }
+
+  ul {
+    @extend %undecorated-list;
+    li {
+      @extend %calendar-li;
+    }
+  }
+}
 
 .day-by-half-hour {
   ul {
-    list-style-type: none;
-    margin-left: 0;
-    padding-left: 0;
+    @extend %undecorated-list;
     li {
-      height: $half-hour-height;
-      border-style: solid;
-      border-width: thin;
-      width: 100%;
+      @extend %calendar-li;
       div.times {
         float: left;
         width: 19%;
@@ -26,7 +97,6 @@ $outage-padding-left: 40px;
         .outage-1 {
           top: 0;
           // padding-left: $outage-padding-left;
-          background-color: LightCyan;
           position: absolute;
           width: 100%;
           // @.bg-info;
@@ -37,9 +107,5 @@ $outage-padding-left: 40px;
 }
 
 .calendar-day {
-  width: 100%;
-}
-
-.calendar {
   width: 100%;
 }
