@@ -161,25 +161,53 @@ module OutageHelper
       end
     end
 
+    LEFT_PADDING_INCREMENT = 20
+    RIGHT_PADDING_INCREMENT = 20
+    DisplayOutage = Struct.new(:padding_left, :padding_right)
+
     def render_outages_column
       content_tag :div, class: "col-outages-1" do
-        a = content_tag :ul do
-          interval_iterator.map do
-            # puts date + time.seconds
-            content_tag :li
-          end.join("\n").html_safe
-        end
-
-        a += outages[date].map do |o|
-          link_to(o.title.html_safe,
-                  o,
-                  class: "outage title",
-                  style: "height: #{duration_in_pixels(o)}px;" \
-                         "top: #{start_time_in_pixels(o)}px;")
-        end.join("\n").html_safe if outages[date]
-
-        a
+        accumulator = render_outages_background
+        sorted_outages = sort_outages_by_start_then_duraton(outages[date])
+        arranged_outages = arrange_outages(sorted_outages)
+        accumulator += render_outages(arranged_outages)
+        accumulator
       end
+    end
+
+    def render_outages_background
+      content_tag :ul do
+        interval_iterator.map do
+          # puts date + time.seconds
+          content_tag :li
+        end.join("\n").html_safe
+      end
+    end
+
+    def sort_outages_by_start_then_duraton(outages)
+      return [] unless outages
+      outages.sort do |a, b|
+        start = a.start_datetime_utc <=> b.start_datetime_utc
+        next start unless start == 0
+        a.duration(date) <=> b.duration(date)
+      end
+    end
+
+    Overlap = Struct.new(:datetime, :direction, :outage)
+
+    def arrange_outages(outages)
+      indent_level = []
+      outages
+    end
+
+    def render_outages(outages)
+      outages.map do |o|
+        link_to(o.title.html_safe,
+                o,
+                class: "outage title",
+                style: "height: #{duration_in_pixels(o)}px;" \
+                       "top: #{start_time_in_pixels(o)}px;")
+      end.join("\n").html_safe
     end
 
     def interval_iterator
@@ -202,16 +230,20 @@ module OutageHelper
     # http://stackoverflow.com/questions/19085937/finding-intervals-of-a-set-that-are-overlapping
     # I think the original answer was for open-open intervals. I think of open-
     # closed I need to swap the -1 and 1.
+
     def overlaps(outages)
-      start_stop_list = outages.reduce([]) do |a, e|
-        a << [e.start_datetime_utc, -1, e]
-        a << [e.end_datetime_utc, 1, e]
+      outages.reduce([]) do |a, e|
+        a << Overlap.new(e.start_datetime_utc, -1, e)
+        a << Overlap.new(e.end_datetime_utc, 1, e)
       end.sort
       # .each do |x| puts "#{x[2].id} #{x[2].start_datetime_utc} #{x[1]}" }
       # TODO: Make this more closure-like.
-      result = 0
-      n = 0
-      start_stop_list.each { |x| result += n if x[2] == -1; n -= x[2] }
+      # result = 0
+      # n = 0
+      # start_stop_list.reduce do |a, e|
+      #   result += n if e.direction == -1
+      #   n -= e.direction
+      # end
     end
   end
 end
