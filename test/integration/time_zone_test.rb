@@ -18,7 +18,7 @@ class TimeZoneTest < ActionDispatch::IntegrationTest
     # TODO: Make this work in other time zones.
     # ActiveSupport::TimeZone[`cat /etc/timezone`.strip].name
     # TODO: Find out why/where Rails encodes cookies
-    assert_equal  "America/Los_Angeles",
+    assert_equal  "Etc/UTC",
                   URI.decode(page.driver.cookies["time_zone"].value)
     assert_current_path(outages_path)
     # Now that cookie is set, we should go straight to the page.

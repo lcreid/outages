@@ -2,14 +2,14 @@ function get_cookie(name) {
   cookies = document.cookie.split(';');
   for(i = 0; i < cookies.length; i++) {
     cookie = cookies[i].trim();
-    if (cookie.indexOf(name + "=") == 0) {
+    if (cookie.indexOf(name + "=") === 0) {
       return cookie.substring(name.length + 1);
     }
   }
   return null;
 }
 
-$(document).ready(function(){
+$(document).on('turbolinks:load', function() {
   // console.log("Raw cookie value: " + get_cookie('time_zone'));
   var tz = get_cookie('time_zone');
   // console.log("Time zone from JavaScript from cookie: " + tz);
